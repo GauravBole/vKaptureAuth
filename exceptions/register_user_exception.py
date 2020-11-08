@@ -16,9 +16,6 @@ class RegisterUserException(Exception):
     def dict(self):
         return {"error_message": self.message}
     
-    @classmethod
-    def status_code(cls):
-        return cls.status_code
 
         
 class RegisterUserDaoException(Exception):
