@@ -5,4 +5,4 @@ def validate_mobile_number(number):
     if re.match(r'[7-9]\d{9}$', number):
         return number
     else:
-        raise ValueError({"error": "invalid mobile number"})
+        raise ValueError("invalid mobile number")
