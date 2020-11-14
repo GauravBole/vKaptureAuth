@@ -1,19 +1,15 @@
-from flask import Blueprint, request, Response, make_response, jsonify
+from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
-
-from config import db_cursor as cursor
-from utils.jwt_util import JWTEncodeDecode
-import json
 
 from auth.services.registration import RgeistrationService
 
-auth_blueprint = Blueprint('login_url', __name__)
+auth_blueprint = Blueprint('register_url', __name__)
 
 
 class RegistrationApi(MethodView):
     
     def post(self):
-        response_data = {"message": "something wents wrong", "status": "fail", "status_code": "501"}
+        response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}
         try:
             post_data = request.form.to_dict()
             registration_service = RgeistrationService()
