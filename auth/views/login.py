@@ -1,14 +1,30 @@
-from flask import Blueprint, request, Response, make_response, jsonify
+from flask import Blueprint, request,  make_response, jsonify, url_for, redirect
 from flask.views import MethodView
 
+
 from config import db_cursor as cursor
+from config import oauth
+
 from utils.jwt_util import JWTEncodeDecode
-import json
-
-auth_blueprint = Blueprint('login_url', __name__)
 
 
-@auth_blueprint.route('/')
+login_blueprint = Blueprint('login_url', __name__)
+
+
+@login_blueprint.route('/auth/google_login')
+def login():
+    redirect_uri = url_for('login_url.auth', _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+@login_blueprint.route('/auth/google_auth')
+def auth():
+    token = oauth.google.authorize_access_token()
+    user = oauth.google.parse_id_token(token)
+    print(user)
+    return redirect('/')
+
+
+@login_blueprint.route('/')
 def index():
     # cur = db_cursor.execute('select * from auth;')
     # print(cur)
@@ -46,9 +62,11 @@ class LoginApi(MethodView):
         
 
 login_view = LoginApi.as_view('login_api')
-auth_blueprint.add_url_rule(
+login_blueprint.add_url_rule(
     '/auth/login',
     view_func=login_view,
     methods=['POST']
 )
         
+        
+
