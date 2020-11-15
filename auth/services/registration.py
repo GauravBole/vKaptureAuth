@@ -26,7 +26,6 @@ class RgeistrationService:
         user_dao = UserDao()
         user_exists = user_dao.check_user_exists(username=username)
         if user_exists:
-            print("in if")
             raise ValueError("user name allready exists please try another")
         return True
     
