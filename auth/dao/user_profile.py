@@ -8,7 +8,7 @@ class UserProfileDao:
             user_profile_qs = '''select a.username, up.email, up.mobile_number 
                                 from auth as a join userprofile as up 
                                 on a.id = up.user_id 
-                                where a.id={user_id}s;'''
+                                where a.id={user_id};'''
             cursor.execute(user_profile_qs.format(user_id=user_id))
             row = cursor.fetchone()
             return row
