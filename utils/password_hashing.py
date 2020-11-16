@@ -8,7 +8,7 @@ class PasswordHashing:
     
     @staticmethod
     def decode_hash(password:str, hashed_password:str):
-        return sha256_crypt.verify(hashed_password, password)
+        return sha256_crypt.verify(password, hashed_password)
     
 # https://pythonprogramming.net/password-hashing-flask-tutorial/
     
