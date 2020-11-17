@@ -24,4 +24,4 @@ class UserProfile(BaseModel):
     @validator('mobile_number')
     def validate_mobile_number(cls, mobile_number):
         return validate_mobile_number(number=mobile_number)
-    
+
