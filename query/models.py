@@ -15,8 +15,8 @@ class Address(BaseModel):
     address: str
     city: str = None
     zip_code: str
-    state_id: State
-    district_id: District
+    state_id: int
+    district_id: int
 
 class EventCategory(BaseModel):
     name: str
@@ -31,12 +31,25 @@ class InquiryStatus(str, Enum):
 
 class Inquiry(BaseModel):
     query_id: str
-    # event_category_id: EventCategory
+    event_category_id: int
     title: str
     extra_message: str
     budget: str
     from_time: datetime
     to_time: datetime
-    # status: InquiryStatus
-    # adddress_id: Address
+    status: InquiryStatus
+    detail_address: Address
+    created_by_id: int
+
+
+class InquiryDetail(BaseModel):
+    query_id: str
+    event_category: EventCategory
+    title: str
+    extra_message: str
+    budget: str
+    from_time: datetime
+    to_time: datetime
+    status: InquiryStatus
+    detail_address: Address
     # created_by_id: User

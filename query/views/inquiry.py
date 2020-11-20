@@ -14,11 +14,15 @@ class InquiryApiView(MethodView):
         create_inquiry_service.create_inquiry(request_data=post_data)
         # Inquiry(post_data)
 
-
+    def get(self):
+        inquiry_service = InquiryService()
+        inquiry_data = inquiry_service.get_all_inquires()
+        return inquiry_data
 
 inquiry_api = InquiryApiView.as_view('inquiry_api')
 inquir_blueprint.add_url_rule(
     '/create',
     view_func=inquiry_api,
     methods=['GET', 'POST']
+
 )
