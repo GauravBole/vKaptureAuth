@@ -24,7 +24,11 @@ class inquiryDao:
             cursor.execute(create_inquiry_query.format(**request_date))
             conn.commit()
         except Exception as e:
-            raise DaoExceptionError(status_code=401, message="Error in inquiry creation dao")
+            conn.commit()
+            raise DaoExceptionError(status_code=401, message="Error in inquiry creation dao", detal_message=e)
+            
+    
+            
 
     
 
