@@ -17,7 +17,8 @@ class InquiryApiView(MethodView):
     def get(self):
         inquiry_service = InquiryService()
         inquiry_data = inquiry_service.get_all_inquires()
-        return inquiry_data
+        return make_response(jsonify(inquiry_data)), 200
+        # return inquiry_data
 
 inquiry_api = InquiryApiView.as_view('inquiry_api')
 inquir_blueprint.add_url_rule(

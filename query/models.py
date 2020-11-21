@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from typing import List
 from pydantic import BaseModel, conint, constr, ValidationError, validator
 # from models import User
 
@@ -44,12 +45,16 @@ class Inquiry(BaseModel):
 
 class InquiryDetail(BaseModel):
     query_id: str
-    event_category: EventCategory
+    # event_category: EventCategory
     title: str
     extra_message: str
     budget: str
     from_time: datetime
     to_time: datetime
-    status: InquiryStatus
+    # status: InquiryStatus
     detail_address: Address
     # created_by_id: User
+
+
+# class Inquires(BaseModel):
+#     inquires = List[InquiryDetail]
