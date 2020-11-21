@@ -4,6 +4,7 @@ from exceptions.exception_error import ExceptionError
 from exceptions.dao_exceptions import DaoExceptionError
 from pydantic import parse_obj_as
 from typing import List
+from pydantic import BaseModel, ValidationError, conint
 
 class InquiryService:
 
@@ -18,6 +19,9 @@ class InquiryService:
             inquiry_dao.create_inquiey(request_date=request_data)
             return True
 
+        except ValidationError as e:
+            raise ExceptionError(message=e.errors(), status_code=400)
+        
         except ValueError as ve:
             raise ExceptionError(status_code=403, message=(str(ve)))
 

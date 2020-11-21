@@ -13,7 +13,6 @@ class RgeistrationService:
     def validate_registration_data(self, request_data: dict):
         required_fields = ['username', 'password', 'email', 'mobile_number']
         validate_felds = [data for data in required_fields if data not in request_data]
-        print(validate_felds)
         if len(validate_felds) > 1:
             raise ValueError({"error": "Required {} fields missings".format(validate_felds)})
         
