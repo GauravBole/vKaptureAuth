@@ -1,7 +1,7 @@
 
 from config import db_cursor as cursor, db_conn as conn
 from exceptions.dao_exceptions import DaoExceptionError
-
+import psycopg2
 class inquiryDao:
 
     def create_inquiey(self, request_date):
@@ -23,15 +23,15 @@ class inquiryDao:
             
             cursor.execute(create_inquiry_query.format(**request_date))
             conn.commit()
+        except psycopg2.ProgrammingError as exc:
+            print(exc.message, '--------------')
+            conn.rollback()
         except Exception as e:
-            conn.commit()
+            print(e)
             raise DaoExceptionError(status_code=401, message="Error in inquiry creation dao", detal_message=e)
             
     
             
-
-    
-
     def get_all_inquiry(self):
         try:
             address_query = ''' select a.id, s.name, d.name, a.city, a.zip_code from address as a join state as s on a.state_id=s.id join district as d on a.district_id = d.id
