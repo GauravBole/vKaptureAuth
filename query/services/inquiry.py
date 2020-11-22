@@ -4,7 +4,6 @@ from exceptions.exception_error import ExceptionError
 from exceptions.dao_exceptions import DaoExceptionError
 from pydantic import parse_obj_as
 from typing import List
-from utils.query_number_generator import create_query
 from pydantic import BaseModel, ValidationError, conint
 
 class InquiryService:
@@ -15,7 +14,6 @@ class InquiryService:
             address_model = Address(**request_data)
             request_data['detail_address'] = address_model
             request_data['status'] = 'Created'
-            request_data['query_id'] = create_query()
             inquiry_model = Inquiry(**request_data)
             inquiry_dao = inquiryDao()  
             inquiry_dao.create_inquiey(request_date=request_data)
@@ -31,7 +29,6 @@ class InquiryService:
             raise ExceptionError(status_code=403, message=(de.message))
 
         except Exception as e:
-            print(e)
             raise ExceptionError(message="error in login user service", status_code=403)
     
 

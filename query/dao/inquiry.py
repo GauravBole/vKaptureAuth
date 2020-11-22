@@ -1,11 +1,14 @@
 
 from config import db_cursor as cursor, db_conn as conn
 from exceptions.dao_exceptions import DaoExceptionError
+from utils.query_number_generator import create_query
+
 import psycopg2
 class inquiryDao:
 
     def create_inquiey(self, request_date):
         try:
+            request_date['query_id'] = create_query()
             create_address_query = ''' INSERT INTO address (address, city, state_id, district_id, zip_code) values('{address}', '{city}', '{state_id}', 
                                                                                                                     '{district_id}', '{zip_code}') RETURNING id;'''
             
@@ -22,12 +25,9 @@ class inquiryDao:
                                     '''
             
             cursor.execute(create_inquiry_query.format(**request_date))
-            conn.commit()
-        except psycopg2.ProgrammingError as exc:
-            print(exc.message, '--------------')
-            conn.rollback()
+            conn.commit()  
         except Exception as e:
-            print(e)
+            conn.rollback()
             raise DaoExceptionError(status_code=401, message="Error in inquiry creation dao", detal_message=e)
             
     

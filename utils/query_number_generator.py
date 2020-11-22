@@ -1,5 +1,6 @@
 import datetime
 from config import db_cursor as cursor, db_conn as conn
+from exceptions.dao_exceptions import DaoExceptionError
 import psycopg2
 
 def create_query():
@@ -15,7 +16,6 @@ def create_query():
         if not row:
             new_query = '''insert into query_number (query, month, year, day) values({query}, {month}, {year}, {day});'''
             query_date_data['query'] = 1
-            print(new_query.format(**query_date_data))
             cursor.execute(new_query.format(**query_date_data))
             # cursor.close()
             query_id = str(month) + str(year) + str(1).zfill(4)
@@ -35,12 +35,10 @@ def create_query():
         
         # cursor.close()
         query_id = str(month) + str(year) + str(query).zfill(4)
-        print(query_id)
+        # 100/0
         return query_id
-    except psycopg2.ProgrammingError as exc:
-        print(exc.message)
-        conn.rollback()
+    
     except Exception as e:
-        print(e, '--->')
-        cursor.close()
+        conn.rollback()
+        raise DaoExceptionError(status_code=400, message="error in query number genration")
 
