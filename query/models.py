@@ -31,7 +31,7 @@ class InquiryStatus(str, Enum):
     Expired = 'Expired'
 
 class Inquiry(BaseModel):
-    query_id: str
+    # query_id: str
     event_category_id: int
     title: str
     extra_message: str
@@ -44,7 +44,7 @@ class Inquiry(BaseModel):
 
 
 class InquiryDetail(BaseModel):
-    query_id: str
+    query_id: str 
     # event_category: EventCategory
     title: str
     extra_message: str
