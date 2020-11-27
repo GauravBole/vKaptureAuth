@@ -4,10 +4,11 @@ from flask.views import MethodView
 from query.services import InquiryService
 # from query.models import Inquiry, Address
 inquir_blueprint = Blueprint('inquiry_url', __name__, url_prefix='/inquiry')
-
+from auth.decorators import authanticate
 class InquiryApiView(MethodView):
+    decorators = [authanticate]
 
-    def post(self):
+    def post(self, *arge, **kwargs):
         response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}
         try:
             post_data = request.form.to_dict()
@@ -23,13 +24,16 @@ class InquiryApiView(MethodView):
         return make_response(jsonify(response_data)), response_data['status_code']
         
 
-    def get(self):
+    def get(self, *arge, **kwargs):
         inquiry_service = InquiryService()
         inquiry_data = inquiry_service.get_all_inquires()
         return make_response(jsonify(inquiry_data)), 200
         
+def login_required():
+    print(request.headers.get('Authorization'), "request0000>")
 
 inquiry_api = InquiryApiView.as_view('inquiry_api')
+inquir_blueprint.before_request(login_required)
 inquir_blueprint.add_url_rule(
     '/create',
     view_func=inquiry_api,
