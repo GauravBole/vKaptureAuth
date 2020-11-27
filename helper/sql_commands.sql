@@ -63,3 +63,11 @@ create table inquiry (id serial primary key,
 alter table inquiry add constraint fk_address foreign key(address_id) references address(id)
 --https://www.compose.com/articles/faster-operations-with-the-jsonb-data-type-in-postgresql/
 
+create table user_group (id serial primary key, name varchar(100), code varchar(50));
+insert into user_group (name, code) values ('customer', 'C'),('photographer', 'P'), ('admin', 'A');
+create table permission (id serial primary key, name varchar(100), code varchar(50));
+create table group_permission (id serial primary key,
+								group_id int, constraint fk_group foreign key(group_id) references user_group(id),
+							permission_id int, constraint fk_permission foreign key(permission_id) references permission(id)); 
+
+

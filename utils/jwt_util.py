@@ -12,7 +12,7 @@ class JWTEncodeDecode:
     
     def encode(self, user_id: int):
         try:
-            expiry_time = datetime.utcnow() + timedelta(seconds=self.JWT_EXP_DELTA_SECONDS)
+            expiry_time = datetime.now() + timedelta(minutes=self.JWT_EXP_DELTA_SECONDS)
             payload_data = {"user_id": user_id, "expiry": str(expiry_time)}
             token = jwt.encode(payload_data, self.JWT_SECRET, self.JWT_ALGORITHM)
         except Exception as e:
@@ -27,10 +27,16 @@ class JWTEncodeDecode:
         if token:
             try:
                 payload = jwt.decode(token, self.JWT_SECRET, self.JWT_ALGORITHM)
-                response = {"message": "decoded succesfully", "success": True, "data":payload}
+                print(payload, datetime.now())
+                if datetime.strptime(payload['expiry'], "%Y-%m-%d %H:%M:%S.%f") < datetime.now():
+                    
+                    response = {"message": "token expired", "success": False, 'error': 401}
+                else:
+                    response = {"message": "decoded succesfully", "success": True, "data":payload}
             except ExpiredSignatureError:
-                response = {"error": 401, "message": "Token signiture", "success": False}
+                response = {"jwt_data": 401, "message": "Token signiture", "success": False}
             except Exception as e:
+                print(e)
                 response = {"error": 401, "message": "Token decoding fail", "success": False}
         else:
             response = {"error": 401, "message": "Token required", "success": False}
