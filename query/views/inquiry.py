@@ -1,12 +1,19 @@
+from os import name
 import re
 from flask import Blueprint, request,  make_response, jsonify, url_for, redirect
 from flask.views import MethodView
 from query.services import InquiryService
 # from query.models import Inquiry, Address
 inquir_blueprint = Blueprint('inquiry_url', __name__, url_prefix='/inquiry')
-from auth.decorators import authanticate
+from auth.decorators import authanticate, privilege_required
 class InquiryApiView(MethodView):
-    decorators = [authanticate]
+    allow = {
+       'GET': ['anonymous', 'user', 'admin', ],
+       'POST': ['user', 'admin', ],
+       'DELETE': ['moderator', 'admin', ],
+       }
+    decorators = [privilege_required(acl=allow)]
+    
 
     def post(self, *arge, **kwargs):
         response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}
@@ -37,6 +44,8 @@ inquir_blueprint.before_request(login_required)
 inquir_blueprint.add_url_rule(
     '/create',
     view_func=inquiry_api,
-    methods=['GET', 'POST']
+    
+    methods=['GET', 'POST'],
+    # options={"name", "inquiry_add"}
 
 )

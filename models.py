@@ -8,12 +8,11 @@ from validators.mobile_number import validate_mobile_number
 class User(BaseModel):
     username : str
     password : str
-    
+    group: str
 class UserProfile(BaseModel):
     user: User = None
     mobile_number : constr(max_length=25)
     email : str
-    profile_type: str = "C"
     profiel_pic: str = None
     is_active: bool = True
     

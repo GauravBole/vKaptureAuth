@@ -9,6 +9,7 @@ def authanticate(function):
 
     @wraps(function)
     def decorated_function(*args, **kwargs):
+        print(args, kwargs)
         jwt_encode_decode = JWTEncodeDecode()
         if 'Authorization' not in request.headers:
             abort(401)
@@ -29,3 +30,15 @@ def authanticate(function):
         return function(*args, **kwargs)
 
     return decorated_function
+
+class privilege_required(object):
+    def __init__(self, acl):
+        self.acl = acl
+
+    def __call__(self, f):
+        def wrapped_f(*args, **kwargs):
+            print(self.acl, dir(f), f.__name__, request.method)
+            # if not g.role in self.acl[request.method]:
+            #     abort(403)
+            return f(*args, **kwargs)
+        return wrapped_f

@@ -9,7 +9,7 @@ class DaoExceptionError(Exception):
         
     def __str__(self):
         return f'{self.message}' 
-    
+   
     def dict(self):
         return {"error_message": self.message, "detail_message": self.detal_message}
     
