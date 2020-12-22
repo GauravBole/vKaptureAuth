@@ -32,6 +32,7 @@ class InquiryApiView(MethodView):
         
 
     def get(self, *arge, **kwargs):
+        print(arge, kwargs, "decoretors data")
         inquiry_service = InquiryService()
         inquiry_data = inquiry_service.get_all_inquires()
         return make_response(jsonify(inquiry_data)), 200

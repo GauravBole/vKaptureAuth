@@ -13,7 +13,7 @@ class LoginService:
             check_passwoed = False        
             is_login, user_data = user_login_dao_obj.login_user(username=request_data['username'], password=request_data['password'])
             jwt_encoder = JWTEncodeDecode()
-            token = jwt_encoder.encode(user_id=user_data['id']).decode("utf-8")
+            token = jwt_encoder.encode(user_id=user_data['id'], group_id=user_data["id"]).decode("utf-8")
             if is_login:
                 check_passwoed = PasswordHashing.decode_hash(request_data['password'], user_data['password'])
                 
