@@ -16,6 +16,7 @@ t_port = "5432"
 t_dbname = "vkapture"
 # t_user = "gaurav"
 # t_pw = "postgres"
+
 db_conn = psycopg2.connect(host=t_host, port=t_port, dbname=t_dbname)
 db_cursor = db_conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
