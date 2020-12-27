@@ -5,7 +5,7 @@ from auth.dao.registration import UserDao
 from utils.password_hashing import PasswordHashing
 from models import UserProfile, User
 from exceptions.register_user_exception import RegisterUserException
-from pydantic import BaseModel, ValidationError, conint
+from pydantic import ValidationError
 
 import json
 class RgeistrationService:

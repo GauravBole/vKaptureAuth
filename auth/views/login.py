@@ -7,7 +7,8 @@ from config import oauth
 from utils.jwt_util import JWTEncodeDecode
 
 from auth.services.login import LoginService
-
+from exceptions.dao_exceptions import DaoExceptionError
+from exceptions.exception_error import ExceptionError
 login_blueprint = Blueprint('login_url', __name__)
 
 
@@ -55,12 +56,11 @@ class LoginApi(MethodView):
             password = post_data.get('password') or None
             login_service_obj = LoginService()
             user_data = login_service_obj.login_user(request_data={"username": username, "password": password})
-            print(user_data)
             response_data['message'] = "success" 
             response_data["status"] = "success"
             response_data["status_code"] = 200
             response_data['data'] = user_data
-        except Exception as e:
+        except (DaoExceptionError, ExceptionError) as e:
             response_data['status_code'] = e.status_code
             response_data['message'] = e.dict()
             

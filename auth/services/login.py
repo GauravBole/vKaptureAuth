@@ -10,10 +10,10 @@ class LoginService:
     def login_user(self, request_data: dict):
         try:
             user_login_dao_obj = UserLoginDao()
-            check_passwoed = False        
+            check_passwoed = False
             is_login, user_data = user_login_dao_obj.login_user(username=request_data['username'], password=request_data['password'])
             jwt_encoder = JWTEncodeDecode()
-            token = jwt_encoder.encode(user_id=user_data['id']).decode("utf-8")
+            token = jwt_encoder.encode(user_id=user_data['id'], group_id=user_data["group_id"]).decode("utf-8")
             if is_login:
                 check_passwoed = PasswordHashing.decode_hash(request_data['password'], user_data['password'])
                 
