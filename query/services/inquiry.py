@@ -4,7 +4,7 @@ from exceptions.exception_error import ExceptionError
 from exceptions.dao_exceptions import DaoExceptionError
 from pydantic import parse_obj_as
 from typing import List
-from pydantic import BaseModel, ValidationError, conint
+from pydantic import ValidationError
 
 class InquiryService:
 

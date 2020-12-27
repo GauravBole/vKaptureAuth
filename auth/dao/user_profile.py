@@ -5,7 +5,7 @@ class UserProfileDao:
 
     def get_user_info_from_user_id(self, user_id:int):
         try:
-            user_profile_qs = '''select a.username, up.email, up.mobile_number 
+            user_profile_qs = '''select a.username, up.email, up.mobile_number, a.group_id
                                 from auth as a join userprofile as up 
                                 on a.id = up.user_id 
                                 where a.id={user_id};'''
@@ -14,3 +14,4 @@ class UserProfileDao:
             return row
         except Exception as e:
             raise DaoExceptionError(message="error in user profile info dao", status_code=400) 
+        

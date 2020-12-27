@@ -4,7 +4,7 @@ class UserLoginDao:
 
     def login_user(self,username: str, password: str):
         try:
-            user_login_query = "select count('id'), id, password from auth where username='{username}' group by id;"
+            user_login_query = "select count('id'), id, group_id, password from auth where username='{username}' group by id;"
             # print(user_login_query.format(username=username, password=password))
             cursor.execute(user_login_query.format(username=username, password=password))
             row = cursor.fetchone()
@@ -13,3 +13,4 @@ class UserLoginDao:
             return False, None
         except Exception as e:
             raise DaoExceptionError(message="error in login user dao", status_code=500)
+        

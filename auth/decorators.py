@@ -3,13 +3,13 @@ from functools import wraps
 from flask import abort, request, make_response, jsonify
 from flask.globals import request
 from utils.jwt_util import JWTEncodeDecode
+from auth.services.authorization import AutharizationService
 import jwt
 
 def authanticate(function):
 
     @wraps(function)
     def decorated_function(*args, **kwargs):
-        print(args, kwargs)
         jwt_encode_decode = JWTEncodeDecode()
         if 'Authorization' not in request.headers:
             abort(401)
@@ -43,6 +43,7 @@ class privilege_required(object):
             # print(self.acl, dir(f), f.__name__, request.method)
             # if not g.role in self.acl[request.method]:
             #     abort(403)
+            accessing_permission = self.acl[request.method]
 
             jwt_encode_decode = JWTEncodeDecode()
             if 'Authorization' not in request.headers:
@@ -55,12 +56,15 @@ class privilege_required(object):
             if jwt_data['success']:
                 payload = jwt_data['data']
                 
-                kwargs['user_id'] = payload['user_id']
+                kwargs['user_id'] = payload['user_id']   
 
             else:
                 return make_response(jsonify(jwt_data)), jwt_data['error']
-            
-            
+            print(payload, "---->")
+            autharization_service = AutharizationService(group=payload['group_id'], permisstion=accessing_permission)
+            if not autharization_service.is_autharize_group_user():
+                abort(401)
+                 
             return f(*args, **kwargs)
 
             # return f(*args, **kwargs)
