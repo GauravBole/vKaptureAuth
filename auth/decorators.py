@@ -44,7 +44,7 @@ class privilege_required(object):
             # if not g.role in self.acl[request.method]:
             #     abort(403)
             accessing_permission = self.acl[request.method]
-
+            
             jwt_encode_decode = JWTEncodeDecode()
             if 'Authorization' not in request.headers:
                 abort(401)

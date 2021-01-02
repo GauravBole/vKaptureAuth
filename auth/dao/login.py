@@ -11,7 +11,7 @@ class UserLoginDao:
                 # print(user_login_query.format(username=username, password=password))
                 cursor.execute(user_login_query.format(username=username, password=password))
                 row = cursor.fetchone()
-                100/0
+                
                 if row and row['count'] > 0:
                     return True, row
                 return False, None

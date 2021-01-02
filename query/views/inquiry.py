@@ -8,8 +8,8 @@ inquir_blueprint = Blueprint('inquiry_url', __name__, url_prefix='/inquiry')
 from auth.decorators import authanticate, privilege_required
 class InquiryApiView(MethodView):
     allow = {
-       'GET': "view_all_inquiries",
-       'POST': "create_inquiry",
+       'GET': "view_all_inquiry", 
+       'POST': "craete_inquiry",
        'DELETE': "delete_inquiry",
        }
     decorators = [privilege_required(acl=allow)]
