@@ -1,19 +1,20 @@
 
-from config import db_cursor as cursor, db_conn as conn
+# from config import db_cursor as cursor, db_conn as conn
 from exceptions.dao_exceptions import DaoExceptionError
 from utils.query_number_generator import create_query
+from database_connection.decorator import atomic_tarnsaction
 
 import psycopg2
 class inquiryDao:
 
-    def create_inquiey(self, request_date):
+    def create_inquiey(self, request_date, cursor=None):
         try:
-            request_date['query_id'] = create_query()
+            request_date['query_id'] = create_query(cursor)
             create_address_query = ''' INSERT INTO address (address, city, state_id, district_id, zip_code) values('{address}', '{city}', '{state_id}', 
                                                                                                                     '{district_id}', '{zip_code}') RETURNING id;'''
             
             cursor.execute(create_address_query.format(**request_date['detail_address'].dict()))
-            
+    
             request_date['address_id'] = cursor.fetchone()['id']
             
             create_inquiry_query = ''' INSERT INTO inquiry (query_id, event_category_id, title, address_id, extra_message, budget, 
@@ -25,13 +26,13 @@ class inquiryDao:
                                     '''
             
             cursor.execute(create_inquiry_query.format(**request_date))
-            conn.commit()  
+            # conn.commit()  
         except Exception as e:
-            conn.rollback()
+            # conn.rollback()
+            print(e)
             raise DaoExceptionError(status_code=401, message="Error in inquiry creation dao", detal_message=e)
             
-    
-            
+      
     def get_all_inquiry(self):
         try:
             address_query = ''' select a.id, s.name, d.name, a.city, a.zip_code from address as a join state as s on a.state_id=s.id join district as d on a.district_id = d.id

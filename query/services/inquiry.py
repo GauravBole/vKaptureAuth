@@ -5,18 +5,22 @@ from exceptions.dao_exceptions import DaoExceptionError
 from pydantic import parse_obj_as
 from typing import List
 from pydantic import ValidationError
-
+from database_connection.decorator import atomic_tarnsaction
+from database_connection.context_manager import DatabaseConnection as db_connection
 class InquiryService:
 
-    def create_inquiry(self, request_data):
-        
+    @atomic_tarnsaction
+    def create_inquiry(self, request_data, cursor):
+        # print(cursor)
         try:
+            # with db_connection() as conn:
             address_model = Address(**request_data)
             request_data['detail_address'] = address_model
             request_data['status'] = 'Created'
             inquiry_model = Inquiry(**request_data)
-            inquiry_dao = inquiryDao()  
-            inquiry_dao.create_inquiey(request_date=request_data)
+            inquiry_dao = inquiryDao()
+            # cursor = conn.db_cursor
+            inquiry_dao.create_inquiey(request_data, cursor=cursor)
             return True
 
         except ValidationError as e:
@@ -29,7 +33,8 @@ class InquiryService:
             raise ExceptionError(status_code=403, message=(de.message))
 
         except Exception as e:
-            raise ExceptionError(message="error in login user service", status_code=403)
+            print(e)
+            raise ExceptionError(message="error in inquiry user service", status_code=403)
     
 
     def get_all_inquires(self):

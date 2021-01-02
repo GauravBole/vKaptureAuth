@@ -31,4 +31,5 @@ class LoginService:
             raise ExceptionError(status_code=403, message=(de.message))
 
         except Exception as e:
+            print(e, "---->")
             raise ExceptionError(message="error in login user service", status_code=403)

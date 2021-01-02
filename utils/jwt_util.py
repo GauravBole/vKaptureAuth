@@ -8,7 +8,7 @@ class JWTEncodeDecode:
     def __init__(self):
         self.JWT_SECRET = 'secret'
         self.JWT_ALGORITHM = 'HS256'
-        self.JWT_EXP_DELTA_SECONDS = 20
+        self.JWT_EXP_DELTA_SECONDS = 2000
     
     def encode(self, user_id: int, group_id: int):
         try:
