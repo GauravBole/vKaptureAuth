@@ -16,7 +16,7 @@ class inquiryDao:
             cursor.execute(create_address_query.format(**request_date['detail_address'].dict()))
     
             request_date['address_id'] = cursor.fetchone()['id']
-            
+            100/0
             create_inquiry_query = ''' INSERT INTO inquiry (query_id, event_category_id, title, address_id, extra_message, budget, 
                                                             from_time, to_time, created_by_id, status) values('{query_id}', '{event_category_id}', '{title}', 
                                                                                                         '{address_id}', '{extra_message}', '{budget}', 

@@ -9,7 +9,7 @@ def atomic_tarnsaction(func):
         db_cursor = connector.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
         try:
         
-            result = func(*arges, **kwargs, conn=db_cursor)
+            result = func(*arges, **kwargs, cursor=db_cursor)
             
         except Exception as e:
             connector.rollback()
