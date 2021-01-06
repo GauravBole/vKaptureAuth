@@ -16,7 +16,7 @@ class inquiryDao:
             cursor.execute(create_address_query.format(**request_date['detail_address'].dict()))
     
             request_date['address_id'] = cursor.fetchone()['id']
-            
+            100/0
             create_inquiry_query = ''' INSERT INTO inquiry (query_id, event_category_id, title, address_id, extra_message, budget, 
                                                             from_time, to_time, created_by_id, status) values('{query_id}', '{event_category_id}', '{title}', 
                                                                                                         '{address_id}', '{extra_message}', '{budget}', 
@@ -33,7 +33,7 @@ class inquiryDao:
             raise DaoExceptionError(status_code=401, message="Error in inquiry creation dao", detal_message=e)
             
       
-    def get_all_inquiry(self):
+    def get_all_inquiry(self, cursor=None):
         try:
             address_query = ''' select a.id, s.name, d.name, a.city, a.zip_code from address as a join state as s on a.state_id=s.id join district as d on a.district_id = d.id
                                 where a.id = 2 '''
@@ -50,7 +50,7 @@ class inquiryDao:
                             as address_table on address_table.address_id=i.address_id'''
 
             cursor.execute(all_queries)
-            conn.commit()
+            # conn.commit()
             return cursor.fetchall()
         except Exception as e:
             raise DaoExceptionError(status_code=400, message="error in all inquiry ado")

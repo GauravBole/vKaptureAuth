@@ -10,7 +10,7 @@ from database_connection.context_manager import DatabaseConnection as db_connect
 class InquiryService:
 
     @atomic_tarnsaction
-    def create_inquiry(self, request_data, cursor):
+    def create_inquiry(self, request_data, cursor=None):
         # print(cursor)
         try:
             # with db_connection() as conn:
@@ -30,17 +30,18 @@ class InquiryService:
             raise ExceptionError(status_code=403, message=(str(ve)))
 
         except DaoExceptionError as de:
-            raise ExceptionError(status_code=403, message=(de.message))
+            # raise ExceptionError(status_code=403, message=(de.message))
+            raise
 
         except Exception as e:
             print(e)
             raise ExceptionError(message="error in inquiry user service", status_code=403)
     
-
-    def get_all_inquires(self):
+    @atomic_tarnsaction
+    def get_all_inquires(self, cursor=None):
         try:
             inquiry_dao = inquiryDao()
-            all_inquires = inquiry_dao.get_all_inquiry()
+            all_inquires = inquiry_dao.get_all_inquiry(cursor=cursor)
             return all_inquires
 
         except DaoExceptionError as de:

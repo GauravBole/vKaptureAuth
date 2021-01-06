@@ -6,6 +6,8 @@ from query.services import InquiryService
 # from query.models import Inquiry, Address
 inquir_blueprint = Blueprint('inquiry_url', __name__, url_prefix='/inquiry')
 from auth.decorators import authanticate, privilege_required
+from exceptions.exception_error import ExceptionError
+from exceptions.dao_exceptions import DaoExceptionError
 class InquiryApiView(MethodView):
     allow = {
        'GET': "view_all_inquiry", 
@@ -25,9 +27,10 @@ class InquiryApiView(MethodView):
             response_data['status_code'] = 200
             response_data['status'] = "success"
 
-        except Exception as e:
-            response_data['status_code'] = e.status_code
-            response_data['message'] = e.dict()
+        except (ExceptionError, DaoExceptionError) as e:
+            response_data['status_code'] = e.code
+            response_data['message'] = e.get_traceback_details()
+            # response_data['message'] = e.dict()
         return make_response(jsonify(response_data)), response_data['status_code']
         
 
