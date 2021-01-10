@@ -72,3 +72,20 @@ create table permission (id serial primary key, name varchar(100), code varchar(
 create table group_permission (id serial primary key,
 								group_id int, constraint fk_group foreign key(group_id) references user_group(id),
 							permission_id int, constraint fk_permission foreign key(permission_id) references permission(id)); 
+
+
+create table quotation_detail (id serial primary key, 
+						photographer_id int, constraint photographer_id foreign key(photographer_id) REFERENCES auth(id),
+						quote float8 not null default 1.0, 
+						message text,
+						is_accepted boolean default false,
+						created_at timestamp default current_timestamp
+						)
+
+create table quotation (id serial primary key,
+						inquiry_id int, constraint inquiry_id foreign key(inquiry_id) references inquiry(id),
+						quotation_detail_id int, constraint quotation_detail_id foreign key(quotation_detail_id) references quotation_detail(id),
+						is_active boolean default true,
+						created_at timestamp default current_timestamp
+						)
+
