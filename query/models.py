@@ -25,6 +25,7 @@ class EventCategory(BaseModel):
 
 class InquiryStatus(str, Enum):
     Created = 'Created'
+    Edited = 'Edited'
     SendQuery = 'Send Query'
     ReceivedQuotation = 'Received Quotation'
     AcceptQuotation = 'Accept Quotation'
@@ -40,6 +41,18 @@ class Inquiry(BaseModel):
     to_time: datetime
     status: InquiryStatus
     detail_address: Address
+    created_by_id: int
+
+class InquiryEdit(BaseModel):
+    # query_id: str
+    event_category_id: int
+    title: str
+    extra_message: str
+    budget: str
+    from_time: datetime
+    to_time: datetime
+    # status: InquiryStatus().Updated
+    # detail_address: Address
     created_by_id: int
 
 
