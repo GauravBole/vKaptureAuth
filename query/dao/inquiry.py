@@ -1,11 +1,12 @@
 
 # from config import db_cursor as cursor, db_conn as conn
+from flask.globals import request
 from exceptions.dao_exceptions import DaoExceptionError
 from utils.query_number_generator import create_query
 from database_connection.decorator import atomic_tarnsaction
 
 import psycopg2
-class inquiryDao:
+class InquiryDao:
 
     def create_inquiey(self, request_date, cursor=None):
         try:
@@ -16,7 +17,7 @@ class inquiryDao:
             cursor.execute(create_address_query.format(**request_date['detail_address'].dict()))
     
             request_date['address_id'] = cursor.fetchone()['id']
-            100/0
+
             create_inquiry_query = ''' INSERT INTO inquiry (query_id, event_category_id, title, address_id, extra_message, budget, 
                                                             from_time, to_time, created_by_id, status) values('{query_id}', '{event_category_id}', '{title}', 
                                                                                                         '{address_id}', '{extra_message}', '{budget}', 
@@ -54,3 +55,21 @@ class inquiryDao:
             return cursor.fetchall()
         except Exception as e:
             raise DaoExceptionError(status_code=400, message="error in all inquiry ado")
+
+
+    def edit_inquiry(self, update_data: dict, inquiry_id: int, cursor=None):
+        try:
+            update_address = 'UPDATE address as a SET {} from inquiry as i where i.id={inquiry_id} and i.address_id=a.id'
+            cursor.execute(update_address.format(', '.join('{k}={v!a}'.format(k=k, v=str(v)) for k, v in update_data['detail_address'].dict().items()), 
+                                                                                        inquiry_id=inquiry_id)
+                                                                                    )   
+            inquiry_data =  update_data['inquiry_data'].dict()
+            inquiry_data['status'] = 'Edited'
+            
+            inquiry_update_query = 'UPDATE inquiry SET {} where id= {inquiry_id}'.format(', '.join('{k}={v!a}'.format(k=k, v=str(v)) for k, v in inquiry_data.items()), 
+                                                                                        inquiry_id=inquiry_id)
+
+            cursor.execute(inquiry_update_query)
+        except Exception as e:
+            raise DaoExceptionError(status_code=400, message="error in edit inquiry dao")
+
