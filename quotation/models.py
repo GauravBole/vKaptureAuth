@@ -2,18 +2,18 @@
 from datetime import datetime
 from enum import Enum
 from typing import List
-from pydantic import BaseModel, conint, constr, ValidationError, validator
+from pydantic import BaseModel
 from query.models import Inquiry
 from models import User
+import datetime
 class QuotationDetails(BaseModel):
-    photographer = User
+    photographer_id : int
     quote : int
-    message : str = None
-    is_accepted : bool
-    created_at : datetime
-
+    message : str = ""
+    is_accepted : bool = False
+    created_at = datetime.datetime.now()
 class Quotation(BaseModel):
-    inquiry : int
+    inquiry_id : int
     quotation : QuotationDetails
     is_active : bool = True
 
