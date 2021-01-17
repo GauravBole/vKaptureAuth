@@ -4,7 +4,7 @@ from flask import Blueprint, request,  make_response, jsonify, url_for, redirect
 from flask.views import MethodView
 from query.services import InquiryService
 # from query.models import Inquiry, Address
-inquir_blueprint = Blueprint('inquiry_url', __name__, url_prefix='/inquiry')
+inquiry_blueprint = Blueprint('inquiry_url', __name__, url_prefix='/inquiry')
 from auth.decorators import authanticate, privilege_required
 from exceptions.exception_error import ExceptionError
 from exceptions.dao_exceptions import DaoExceptionError
@@ -59,7 +59,7 @@ class InquiryApiView(MethodView):
     
 
 inquiry_api = InquiryApiView.as_view('inquiry_api')
-inquir_blueprint.add_url_rule(
+inquiry_blueprint.add_url_rule(
     '/create',
     view_func=inquiry_api,
     
@@ -67,7 +67,7 @@ inquir_blueprint.add_url_rule(
     # options={"name", "inquiry_add"}
 
 )
-inquir_blueprint.add_url_rule(
+inquiry_blueprint.add_url_rule(
     '/<int:inquiry_id>',
     view_func=inquiry_api,
     
