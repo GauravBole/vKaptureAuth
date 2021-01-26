@@ -73,3 +73,41 @@ class InquiryDao:
         except Exception as e:
             raise DaoExceptionError(status_code=400, message="error in edit inquiry dao")
 
+    def is_inquiry_id_exists(self, inquiry_id: int, cursor=None):
+        try:
+            query = """select exists(select 1 from inquiry where id='{inquiry_id}') AS {exists} """
+            
+            cursor.execute(query.format(inquiry_id=inquiry_id, exists='exists'))
+            
+            return cursor.fetchone()['exists']
+        except Exception as e:
+            raise DaoExceptionError(status_code=400, message="error in find inquiry id")
+        
+    def is_photographer_exists(self, photographers: list, cursor=None):
+        try:
+            query = """select exists(select 1 from auth where id in ='{photographers}') AS {exists} """
+            cursor.execute(query.format(photographers=photographers, exists='exists'))
+            cursor.fetchone()['exists']
+            
+        except Exception as e:
+            pass
+
+    def send_query(self, inquiry_photographer_set: list, cursor=None):
+        try:
+            
+            # query = """WITH ins as (Insert into send_query (inquiry_id, photographer_id) values ('{inquiry_id}', '{photographer_id}') 
+            #             on conflict (inquiry_id, photographer_id) DO UPDATE SET is_active = true RETURNING *)"""
+                        # select id from ins union select id from send_query where inquiry_id='{inquiry_id}' and photographer_id={photographer_id} """
+            # cursor.execute(query.format(photographer_id = photographer_id, inquiry_id = inquiry_id))
+            
+            query = """Insert into send_query (inquiry_id, photographer_id) values {}
+                        on conflict (inquiry_id, photographer_id) DO UPDATE SET is_active = true"""
+
+            args_str = ','.join(['%s'] * len(inquiry_photographer_set))
+            sql = query.format(args_str)
+            # print(cursor.mogrify(sql, g).decode('utf8'))
+
+            cursor.execute(sql, inquiry_photographer_set)
+
+        except Exception as e:
+            raise DaoExceptionError(status_code=400, message="error in send inquiry to photographer")
