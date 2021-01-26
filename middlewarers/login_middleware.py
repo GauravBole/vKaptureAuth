@@ -12,7 +12,8 @@ class RequestUser:
         request = Request(environ)
         jwt_encode_decode = JWTEncodeDecode()
         if 'Authorization' not in request.headers:
-            abort(401)
+            return make_response({"messsage": " Token missing"}), 403
+            
         
         payload = None
         environ['user'] = None
