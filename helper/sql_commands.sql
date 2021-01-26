@@ -89,3 +89,14 @@ create table quotation (id serial primary key,
 						created_at timestamp default current_timestamp
 						)
 
+CREATE TRIGGER send_query_updated_at_modtime BEFORE UPDATE ON send_query FOR EACH ROW EXECUTE PROCEDURE 
+			update_updated_at_column();
+		
+create table send_query (id serial primary key, 
+						inquiry_id int, constraint inquiry_id foreign key(inquiry_id) references inquiry(id),
+						photographer_id int, constraint photographer_id foreign key(photographer_id) REFERENCES auth(id),
+						is_active boolean default true,
+						created_at timestamp default current_timestamp,
+						updated_at timestamp default current_timestamp,
+						unique (inquiry_id, photographer_id)
+						)

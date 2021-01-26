@@ -62,4 +62,16 @@ class InquiryService:
         except Exception as e:
             raise ExceptionError(message="error in list inquiry", status_code=400)
 
-    
+    def validate_inquiry_id(self, inquiry_id:int):
+        pass
+
+    @atomic_tarnsaction
+    def send_query(self, photographer_ids: list, inquiry_id: int, cursor=None):
+        try:
+            inquiry_dao = InquiryDao()
+            if not inquiry_dao.is_inquiry_id_exists(inquiry_id=inquiry_id, cursor=cursor):
+                raise ValueError("error inquiry id not exists in system")
+            inquiry_photographer_set = [(inquiry_id, i) for i in photographer_ids]
+            inquiry_dao.send_query(inquiry_photographer_set, cursor=cursor)
+        except Exception as e:
+            raise ExceptionError(message="error in send inquiry to photographer", status_code=400)
