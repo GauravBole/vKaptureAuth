@@ -2,7 +2,7 @@ from flask.views import MethodView
 from flask import Blueprint, request,  make_response, jsonify, url_for, redirect
 from exceptions.dao_exceptions import DaoExceptionError
 from exceptions.exception_error import ExceptionError
-from auth.decorators import authanticate, privilege_required
+from auth.decorators import authanticate, privilege_required, can_quote
 
 from quotation.services import QuotationService
 
@@ -10,7 +10,7 @@ quotation_blueprint = Blueprint('quotation_url', __name__, url_prefix='/quotatio
 
 class QuotationApiView(MethodView):
 
-    decorators = [authanticate]
+    decorators = [authanticate, can_quote]
     
     def post(self, *arge, **kwargs):
         response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}

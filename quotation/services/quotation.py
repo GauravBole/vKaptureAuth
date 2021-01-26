@@ -29,5 +29,10 @@ class QuotationService:
         except Exception as e:
             print(e)
             raise ExceptionError(message="error in quaotaion service service", status_code=403)
+        
+    @atomic_tarnsaction
+    def can_quote(self, user_id, inquiry_id, cursor=None):
+        quotation_dao = QuotationDAO()
+        return quotation_dao.can_quote(user_id=user_id, inquiry_id=inquiry_id, cursor=cursor)
     
         
