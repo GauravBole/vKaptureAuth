@@ -12,10 +12,11 @@ class QuotationApiView(MethodView):
 
     decorators = [authanticate, can_quote]
     
-    def post(self, *arge, **kwargs):
+    def post(self):
         response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}
         try:
-            user_id = kwargs['user_id']
+            user = request.environ['user']
+            user_id = user['user_id']
             quotation_service = QuotationService()
             post_data = request.form.to_dict()
             post_data['photographer_id'] = user_id

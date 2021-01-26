@@ -14,24 +14,9 @@ def authanticate(function):
 
     @wraps(function)
     def decorated_function(*args, **kwargs):
-        jwt_encode_decode = JWTEncodeDecode()
-        if 'Authorization' not in request.headers:
-            abort(401)
-        
-        payload = None
-        data = request.headers['Authorization']
-        token = data.replace('Token ','')
-        jwt_data = jwt_encode_decode.decode(token=token)
-        if jwt_data['success']:
-            payload = jwt_data['data']
-            # request_data = request.form.to_dict()
-            kwargs['user_id'] = payload['user_id']
-            # request_data['user'] = payload
-            # request.args['user'] = payload
-        else:
-            return make_response(jsonify(jwt_data)), jwt_data['error']
-        
-        
+        if not request.environ['user']:
+            return make_response({"messsage": "user not found check tokne"}), 403
+            
         return function(*args, **kwargs)
 
     return decorated_function
