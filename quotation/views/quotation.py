@@ -10,7 +10,7 @@ quotation_blueprint = Blueprint('quotation_url', __name__, url_prefix='/quotatio
 
 class QuotationApiView(MethodView):
 
-    decorators = [authanticate, can_quote]
+    decorators = [can_quote, authanticate]
     
     def post(self):
         response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}

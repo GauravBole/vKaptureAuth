@@ -4,7 +4,7 @@ from flask.globals import request
 from exceptions.dao_exceptions import DaoExceptionError
 from utils.query_number_generator import create_query
 from database_connection.decorator import atomic_tarnsaction
-
+import datetime
 import psycopg2
 class InquiryDao:
 
@@ -19,7 +19,7 @@ class InquiryDao:
             request_date['address_id'] = cursor.fetchone()['id']
 
             create_inquiry_query = ''' INSERT INTO inquiry (query_id, event_category_id, title, address_id, extra_message, budget, 
-                                                            from_time, to_time, created_by_id, status) values('{query_id}', '{event_category_id}', '{title}', 
+                                                            from_time, to_time, created_by_id, status) values('{query_id}', Array {event_category_id}, '{title}', 
                                                                                                         '{address_id}', '{extra_message}', '{budget}', 
                                                                                                         '{from_time}', '{to_time}', '{created_by_id}', '{status}')
             
@@ -38,22 +38,26 @@ class InquiryDao:
         try:
             address_query = ''' select a.id, s.name, d.name, a.city, a.zip_code from address as a join state as s on a.state_id=s.id join district as d on a.district_id = d.id
                                 where a.id = 2 '''
-            all_queries = ''' select i.id, ec.name, i.query_id, i.title, i.extra_message, i.budget, i.address_id,
-                            i.from_time, i.to_time, i.created_by_id, i.status, address_table.address_id, address_table.address_name,
-                            address_table.state_name, address_table.district_name, address_table.city, address_table.zip_code from 
-                            inquiry as i 
-                            JOIN event_category as ec on i.event_category_id = ec.id 
-                            JOIN 
-                                (select a.id as address_id, a.address as address_name, s.name as state_name, d.name as district_name, a.city as city, a.zip_code as zip_code 
-                                from address as a 
-                                join state as s on a.state_id=s.id 
-                                join district as d on a.district_id = d.id) 
-                            as address_table on address_table.address_id=i.address_id'''
+            all_queries = '''select i.id, json_object_agg(ec.name, ec.id), i.query_id, i.title, i.extra_message, i.budget, i.address_id,                           
+						i.from_time, i.to_time, i.created_by_id, i.status, address_table.address_id, address_table.address_name,
+						address_table.state_name, address_table.district_name, address_table.city, address_table.zip_code from 
+						inquiry as i
+						left JOIN event_category as ec on ec.id = any (i.event_category_id)
+						JOIN (select a.id as address_id, a.address as address_name, s.name as state_name,
+										d.name as district_name, a.city as city, a.zip_code as zip_code
+										from address as a 
+										join state as s on a.state_id=s.id 
+										join district as d on a.district_id = d.id) 
+										as address_table on address_table.address_id=i.address_id
+									group by(i.id, address_table.address_id, address_table.address_name,
+								address_table.state_name, address_table.district_name, address_table.city,
+							address_table.zip_code)'''
 
             cursor.execute(all_queries)
             # conn.commit()
             return cursor.fetchall()
         except Exception as e:
+            print(e)
             raise DaoExceptionError(status_code=400, message="error in all inquiry ado")
 
 
@@ -65,12 +69,18 @@ class InquiryDao:
                                                                                     )   
             inquiry_data =  update_data['inquiry_data'].dict()
             inquiry_data['status'] = 'Edited'
+            event_category_ids = update_data['event_category_id']
             
-            inquiry_update_query = 'UPDATE inquiry SET {} where id= {inquiry_id}'.format(', '.join('{k}={v!a}'.format(k=k, v=str(v)) for k, v in inquiry_data.items()), 
-                                                                                        inquiry_id=inquiry_id)
+            inquiry_data.pop('event_category_id')
+            
+            event_category_id = {i for i in event_category_ids}
 
+
+            inquiry_update_query = 'UPDATE inquiry SET {}, event_category_id={event_category_id!r} where id= {inquiry_id}'.format(', '.join('{k}={v!a}'.format(k=k, v=str(v)) for k, v in inquiry_data.items()), 
+                                                                                            inquiry_id=inquiry_id, event_category_id=str(event_category_id))
             cursor.execute(inquiry_update_query)
         except Exception as e:
+            print(e)
             raise DaoExceptionError(status_code=400, message="error in edit inquiry dao")
 
     def is_inquiry_id_exists(self, inquiry_id: int, cursor=None):
