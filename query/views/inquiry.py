@@ -1,4 +1,5 @@
 from os import name
+from query.models import EventCategory
 import re
 from flask import Blueprint, request,  make_response, jsonify, url_for, redirect
 from flask.views import MethodView
@@ -15,15 +16,18 @@ class InquiryApiView(MethodView):
        'DELETE': "delete_inquiry",
        'PUT': 'edit_inquiry'
        }
-    decorators = [privilege_required(acl=allow)]
+    decorators = [privilege_required(acl=allow), authanticate]
     
 
     def post(self, *arge, **kwargs):
         response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}
         try:
+            event_category = request.form.getlist('event_category_id') 
             post_data = request.form.to_dict()
+            post_data['event_category_id'] = list(map(int, event_category))
             create_inquiry_service = InquiryService()
             create_inquiry_service.create_inquiry(request_data=post_data)
+
             response_data['message'] = "Inquiry Created success fullly"
             response_data['status_code'] = 200
             response_data['status'] = "success"
@@ -43,14 +47,17 @@ class InquiryApiView(MethodView):
     def put(self, inquiry_id, *args, **kwargs):
         response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}
         try:
+            user = request.environ['user']
+            user_id = user['user_id']
             inquiry_service = InquiryService()
+            event_category = request.form.getlist('event_category_id') 
             put_data = request.form.to_dict()
-
+            put_data['event_category_id'] = list(map(int, event_category))
+            put_data['updated_by_id'] = user_id
             inquiry_data = inquiry_service.edit_inquiry(inquiry_id=inquiry_id, request_data=put_data)
             response_data['message'] = "Inquiry Updated success fullly"
             response_data['status_code'] = 200
             response_data['status'] = "success"
-
         except (ExceptionError, DaoExceptionError) as e:
             response_data['status_code'] = e.code
             response_data['message'] = e.get_traceback_details()

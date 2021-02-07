@@ -33,7 +33,7 @@ class InquiryStatus(str, Enum):
 
 class Inquiry(BaseModel):
     # query_id: str
-    event_category_id: int
+    event_category_id: list = []
     title: str
     extra_message: str
     budget: str
@@ -45,7 +45,7 @@ class Inquiry(BaseModel):
 
 class InquiryEdit(BaseModel):
     # query_id: str
-    event_category_id: int
+    event_category_id: list = []
     title: str
     extra_message: str
     budget: str
@@ -53,7 +53,7 @@ class InquiryEdit(BaseModel):
     to_time: datetime
     # status: InquiryStatus().Updated
     # detail_address: Address
-    created_by_id: int
+    updated_by_id: int
 
 
 class InquiryDetail(BaseModel):
