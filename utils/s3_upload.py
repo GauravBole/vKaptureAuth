@@ -2,11 +2,15 @@ import boto3
 from botocore.exceptions import ClientError
 import random
 import sys
+from os import environ, path
+from dotenv import load_dotenv
+bas_dir = path.abspath(path.dirname(__file__)) 
+load_dotenv(path.join(bas_dir, '.env'))
 
 class AWSFileUpload:
-    bucket_name = "gauarvblogimage"
-    AWS_S3_ACCESS_KEY_ID = "AKIAJB22P6QJQJJQVAWA"
-    AWS_S3_SECRET_ACCESS_KEY = "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"
+    bucket_name = environ.get("BUCKET_NAME", None)
+    AWS_S3_ACCESS_KEY_ID = environ.get("AWS_S3_ACCESS_KEY_ID", None)
+    AWS_S3_SECRET_ACCESS_KEY = environ.get("AWS_S3_SECRET_ACCESS_KEY", None)
 
     def get_url_of_file(self, fileName, attachment):
         try:

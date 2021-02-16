@@ -26,3 +26,4 @@ phoenix/settings.py
 
 .README.md
 .idea
+.env
