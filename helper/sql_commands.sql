@@ -42,10 +42,30 @@ create table event_category (id serial primary key, name varchar(50), code varch
 
 create type inquiry_status as enum('Created', 'SendQuery', 'ReceivedQuotation', 'AcceptQuotation', 'Expired')
 						  
+-- create table inquiry (id serial primary key,
+-- 					status inquiry_status,
+-- 					query_id varchar (20) unique,
+-- 					event_category_id int,
+-- 					title text,
+-- 					address_id int, 
+-- 					extra_message text,
+-- 					budget float8 not null default 1.0, 
+-- 					from_time timestamp default current_timestamp, 
+-- 					to_time timestamp not null, 
+-- 					created_at timestamp default current_timestamp, 
+-- 					updated_at timestamp default current_timestamp,
+-- 					is_active boolean default true,
+-- 					created_by_id int,
+-- 					metadata jsonb,
+-- 					constraint fk_user foreign key(created_by_id) references auth(id),
+-- 					constraint fk_enent_category foreign key(event_category_id) references event_category(id)
+-- 					);
+-- alter table inquiry add constraint fk_address foreign key(address_id) references address(id)
+
 create table inquiry (id serial primary key,
 					status inquiry_status,
 					query_id varchar (20) unique,
-					event_category_id int,
+					event_category_id int [],
 					title text,
 					address_id int, 
 					extra_message text,
@@ -56,11 +76,14 @@ create table inquiry (id serial primary key,
 					updated_at timestamp default current_timestamp,
 					is_active boolean default true,
 					created_by_id int,
+					updated_by_id int,
 					metadata jsonb,
-					constraint fk_user foreign key(created_by_id) references auth(id),
-					constraint fk_enent_category foreign key(event_category_id) references event_category(id)
+					constraint fk_created_by foreign key(created_by_id) references auth(id),
+					constraint fk_updated_by foreign key(updated_by_id) references auth(id)
+
+					
+--					constraint fk_enent_category foreign key(event_category_id) references event_category(id)
 					);
-alter table inquiry add constraint fk_address foreign key(address_id) references address(id)
 --https://www.compose.com/articles/faster-operations-with-the-jsonb-data-type-in-postgresql/
 
 drop table user_group ;
@@ -100,3 +123,15 @@ create table send_query (id serial primary key,
 						updated_at timestamp default current_timestamp,
 						unique (inquiry_id, photographer_id)
 						)
+
+CREATE TRIGGER portfolio_image_updated_at_modtime BEFORE UPDATE ON portfolio_image FOR EACH ROW EXECUTE PROCEDURE 
+			update_updated_at_column();
+		
+create table portfolio_image (id serial primary key, 
+								image_path varchar(250),
+								created_by_id int,
+								updated_by_id int,
+								constraint created_by_id foreign key(created_by_id) references auth(id),
+								constraint updated_by_id foreign key(updated_by_id) references auth(id),
+								created_at timestamp default current_timestamp,
+								updated_at timestamp)

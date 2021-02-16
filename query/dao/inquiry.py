@@ -75,7 +75,6 @@ class InquiryDao:
             
             event_category_id = {i for i in event_category_ids}
 
-
             inquiry_update_query = 'UPDATE inquiry SET {}, event_category_id={event_category_id!r} where id= {inquiry_id}'.format(', '.join('{k}={v!a}'.format(k=k, v=str(v)) for k, v in inquiry_data.items()), 
                                                                                             inquiry_id=inquiry_id, event_category_id=str(event_category_id))
             cursor.execute(inquiry_update_query)

@@ -24,3 +24,8 @@ class UserProfile(BaseModel):
     def validate_mobile_number(cls, mobile_number):
         return validate_mobile_number(number=mobile_number)
 
+
+
+class PhotographerPortfolioAddImages(BaseModel):
+    created_by_id = int
+    image = bytes
