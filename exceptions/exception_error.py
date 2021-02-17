@@ -1,4 +1,5 @@
 import sys
+from typing import KeysView
 class ExceptionError(Exception):
     
     # def __init__(self, status_code=None, message="Error In register user"):
@@ -20,7 +21,7 @@ class ExceptionError(Exception):
             self.message = args[0]
         else:
             self.message = None
-
+        self.message = kwargs.get('message', None)
         self.code = kwargs.get("code")
         self.level = kwargs.get("level")
         # self.detail = kwargs.get('detail')
