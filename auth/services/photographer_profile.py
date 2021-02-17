@@ -16,7 +16,20 @@ class PhotographerPortfolio:
             file_url = aws_upload.upload_file()
             photographer_profile_dao = PhotographerProfileDao()
             photographer_profile_dao.upload_image(image_path=file_url, user=user_id, cursor=cursor)
-            100/0
+        except DaoExceptionError as de:
+            raise
+        except Exception as e:
+            raise ExceptionError(message="error in upload image service")
+
+    @atomic_tarnsaction
+    def upload_video(self, video, user_id, cursor=None):
+        try:
+            file_name = video.filename
+            aws_upload = AWSFileUpload(file=video, file_name=file_name)
+            file_url = aws_upload.upload_file()
+            photographer_profile_dao = PhotographerProfileDao()
+            photographer_profile_dao.upload_video(video_path=file_url, user=user_id, cursor=cursor)
+           
         except DaoExceptionError as de:
             raise
         except Exception as e:

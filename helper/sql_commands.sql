@@ -135,3 +135,16 @@ create table portfolio_image (id serial primary key,
 								constraint updated_by_id foreign key(updated_by_id) references auth(id),
 								created_at timestamp default current_timestamp,
 								updated_at timestamp)
+
+create table portfolio_video (id serial primary key, 
+								video_path varchar(250),
+								created_by_id int,
+								updated_by_id int,
+								source varchar,
+								source_data json,
+								constraint created_by_id foreign key(created_by_id) references auth(id),
+								constraint updated_by_id foreign key(updated_by_id) references auth(id),
+								created_at timestamp default current_timestamp,
+								updated_at timestamp)
+CREATE TRIGGER portfolio_video_updated_at_modtime BEFORE UPDATE ON portfolio_video FOR EACH ROW EXECUTE PROCEDURE 
+			update_updated_at_column();
