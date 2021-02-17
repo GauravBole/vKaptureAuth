@@ -14,7 +14,7 @@ def authanticate(function):
 
     @wraps(function)
     def decorated_function(*args, **kwargs):
-        if not request.environ['user']:
+        if not request.environ.get('user', None):
             return make_response({"messsage": "user not found check tokne"}), 403
             
         return function(*args, **kwargs)

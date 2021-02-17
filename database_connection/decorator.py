@@ -1,6 +1,8 @@
 import psycopg2.extras
 import psycopg2
 from config import t_host, t_dbname, t_port
+from exceptions.dao_exceptions import DaoExceptionError
+from exceptions.exception_error import ExceptionError
 
 def atomic_tarnsaction(func):
 
@@ -13,8 +15,10 @@ def atomic_tarnsaction(func):
             
         except Exception as e:
             connector.rollback()
-            print("database error", e)
             raise
+            # exception_class = type(e).__name__
+            # exception_message = e.message
+            # raise eval(f"{exception_class}(message='{exception_message}')")
         else:
             connector.commit()
         finally:
