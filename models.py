@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel, conint, constr, ValidationError, validator
-
+from query.models import Address
 from validators.email import validate_email
 from validators.mobile_number import validate_mobile_number
 
@@ -29,3 +29,22 @@ class UserProfile(BaseModel):
 class PhotographerPortfolioAddImages(BaseModel):
     created_by_id = int
     image = bytes
+
+
+class PhotographerProfile(BaseModel):
+    user_id : int
+    address : Address
+    address_proof : Optional[bytes]
+    gst_number : str
+    gst_proof : Optional[bytes] 
+    location_availability : set
+    experties : set
+    metadata : dict = {}
+
+
+class CameraSpecification(BaseModel):
+    profile_id : int
+    model : str
+    brand : str
+
+    
