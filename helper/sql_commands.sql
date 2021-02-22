@@ -148,3 +148,18 @@ create table portfolio_video (id serial primary key,
 								updated_at timestamp)
 CREATE TRIGGER portfolio_video_updated_at_modtime BEFORE UPDATE ON portfolio_video FOR EACH ROW EXECUTE PROCEDURE 
 			update_updated_at_column();
+
+
+create table photographer_profile(id serial primary key, user_id int, address_id int, 
+								address_proof varchar(250), gst_number varchar(20),
+								gst_proof varchar(250), location_availability int [], 
+								experties int [], is_active boolean default true, 
+								is_verified boolean default false, 
+								metadata json,
+								constraint user_id foreign key(user_id) references auth(id),
+								constraint address_id foreign key(address_id) references address(id),
+								created_at timestamp default current_timestamp,
+								updated_at timestamp
+								)
+alter table photographer_profile add constraint unique_user unique (user_id)	;						
+						

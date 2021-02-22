@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, conint, constr, ValidationError, validator
 # from models import User
 
@@ -14,7 +14,7 @@ class District(BaseModel):
     
 class Address(BaseModel):
     address: str
-    city: str = None
+    city: Optional[str]
     zip_code: str
     state_id: int
     district_id: int
