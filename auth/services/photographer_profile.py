@@ -1,10 +1,11 @@
+from auth.decorators import authanticate
 from auth.dao import photographer_profile
 from auth.dao.photographer_profile import PhotographerPortfolioDao, PhotographerPorfileDao
 from query.models import Address
 from database_connection.decorator import atomic_tarnsaction
 from exceptions.dao_exceptions import DaoExceptionError
 from exceptions.exception_error import ExceptionError
-from models import PhotographerProfile
+from models import PhotographerProfile, CameraSpecification
 
 from utils.s3_upload import AWSFileUpload
 
@@ -74,3 +75,22 @@ class PhotographerPorfileService:
 
         except Exception as e:
             raise ExceptionError(message="exception in add profile service")
+
+    @atomic_tarnsaction
+    def add_camera(self, request_data, auth_user, cursor=None):
+        try:
+            photographer_profile_dao = PhotographerPorfileDao()
+
+            photographer_profile_id = photographer_profile_dao.get_auth_user_photographer_profile_id(auth_user=auth_user, cursor=cursor)
+            if photographer_profile_id is None:
+                raise ValueError("invalid photographer user id")
+            request_data['photographer_id'] = photographer_profile_id
+            camera_data = CameraSpecification(**request_data)
+            photographer_profile_dao.add_camera(camera_data=camera_data.dict(), cursor=cursor)
+
+        except ValueError as ve:
+            raise
+
+        except Exception as e:
+            raise ExceptionError(message="exception in add camera")
+        

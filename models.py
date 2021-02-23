@@ -43,8 +43,9 @@ class PhotographerProfile(BaseModel):
 
 
 class CameraSpecification(BaseModel):
-    profile_id : int
+    photographer_id : int
     model : str
     brand : str
+
 
     

@@ -82,5 +82,22 @@ class PhotographerPorfileDao:
         except Exception as e:
             raise DaoExceptionError(status_code=401, message="Error in add photographer id", detal_message=e)
 
+    def get_auth_user_photographer_profile_id(self, auth_user, cursor=None):
+        photographer_id = None
+        try:
+            photographer_query = """ select id from photographer_profile where user_id={auth_user} """
+            cursor.execute(photographer_query.format(auth_user=auth_user))
+            photographer_id = cursor.fetchone().get('id', None)
+        except Exception as e:
+            raise DaoExceptionError(status_code=401, message="Error in add photographer id", detal_message=e)
+        return photographer_id
+
+    def add_camera(self, camera_data: dict, cursor=None):
     
-    
+        try:
+            add_camera_query = """insert into camera (photographer_id, model, brand) values ({photographer_id}, '{model}', '{brand}')"""
+            # camera_data['photographer_id'] = photographer_profile_id
+            cursor.execute(add_camera_query.format(**camera_data))
+        except Exception as e:
+            print(e)
+            raise DaoExceptionError(status_code=401, message="Error in add photographer id", detal_message=e)
