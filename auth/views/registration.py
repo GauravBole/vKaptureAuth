@@ -1,3 +1,4 @@
+from exceptions.register_user_exception import RegisterUserException
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 
@@ -17,7 +18,11 @@ class RegistrationApi(MethodView):
             response_data['message'] = f'{post_data["username"]} Created success fully' 
             response_data["status"] = "success"
             response_data["status_code"] = 200
+        except RegisterUserException as ru:
+            response_data['status_code'] = ru.status_code
+            response_data['message'] = ru.message
         except Exception as e:
+            print(e)
             response_data['status_code'] = e.status_code
             response_data['message'] = e.dict()
             

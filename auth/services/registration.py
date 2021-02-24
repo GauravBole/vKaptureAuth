@@ -30,15 +30,15 @@ class RgeistrationService:
     
     def register_user(self, request_data: dict):
         try:
-            self.validate_user(request_data['username'])
-            user_profile_data = UserProfile(**request_data)  
-            request_data['password'] = PasswordHashing.craete_hash(request_data['password'])
             auth_user_data = User(**request_data)
+            user_profile_data = UserProfile(**request_data) 
+            self.validate_user(request_data['username'])
+            request_data['password'] = PasswordHashing.craete_hash(request_data['password'])
             user_dao = UserDao()
             user_dao.create_user_and_user_profile(user_data=auth_user_data.dict(), user_profile_data=user_profile_data.dict())
         
         except ValidationError as e:
-            raise RegisterUserException(request_data['username'], message=e.errors(), status_code=400)
+            raise RegisterUserException("error in registration", message=e.errors(), status_code=400)
         except ValueError as ve:
             print("in value errro", ve)
             raise RegisterUserException(request_data['username'], message=(str(ve)), status_code=403)
