@@ -8,6 +8,8 @@ from flask.views import MethodView
 
 photographer_blueprint = Blueprint('photographer_url', __name__, url_prefix='/photographer')
 import threading
+import json    
+
 
 class PhotographerPortfolioImagesApiView(MethodView):
     decorators = [authanticate]
@@ -34,7 +36,8 @@ class PhotographerPortfolioImagesApiView(MethodView):
         except (DaoExceptionError, ExceptionError) as ex:
             response_data['message'] = ex.get_traceback_details()
         except Exception as e:
-            pass
+            response_data['message'] = e.args[0]
+
 
         return make_response(jsonify(response_data)), response_data['status_code']
 
@@ -64,11 +67,11 @@ class PhotographerPortfolioVideoApiView(MethodView):
         except (DaoExceptionError, ExceptionError) as ex:
             response_data['message'] = ex.get_traceback_details()
         except Exception as e:
-            pass
+            response_data['message'] = e.args[0]
+
 
         return make_response(jsonify(response_data)), response_data['status_code']
 
-import json    
 class PhotographerProfileApiView(MethodView):
 
     def post(self):
@@ -91,17 +94,38 @@ class PhotographerProfileApiView(MethodView):
         except (DaoExceptionError, ExceptionError) as ex:
             response_data['message'] = ex.get_traceback_details()
         except Exception as e:
-            print(e)
+            response_data['message'] = e.args[0]
             pass
         return make_response(jsonify(response_data)), response_data['status_code']
 
             
+class PhotographerCameraApiView(MethodView):
+    decorators = [authanticate]
+    def post(self):
+        response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}
+
+        try:
+            user = request.environ['user']
+            user_id = user['user_id']
+            post_data = request.form.to_dict()
+            photographer_profile_service = PhotographerPorfileService()
+            photographer_profile_service.add_camera(request_data=post_data, auth_user=user_id)
+            response_data['message'] = {'msg': "camera added successfully"},
+            response_data["status"] = "success"
+            response_data["status_code"] =  200
+        
+        except (DaoExceptionError, ExceptionError) as ex:
+            response_data['message'] = ex.get_traceback_details()
+        except (Exception, ValueError) as e:
+            response_data['message'] = e.args[0]
+        return make_response(jsonify(response_data)), response_data['status_code']
         
 
 
 photographer_image_api = PhotographerPortfolioImagesApiView.as_view('photographer_image_api')
 photographer_video_api = PhotographerPortfolioVideoApiView.as_view('photographer_video_api')
 photographer_profile_api = PhotographerProfileApiView.as_view('photographer_profile_api')
+photographer_camera_api = PhotographerCameraApiView.as_view('photographer_camera_api')
 
 photographer_blueprint.add_url_rule(
     '/add_images/',
@@ -118,5 +142,11 @@ photographer_blueprint.add_url_rule(
 photographer_blueprint.add_url_rule(
     '/photographer_profile/',
     view_func=photographer_profile_api,
+    methods = ['POST']
+)
+
+photographer_blueprint.add_url_rule(
+    '/photographer_camera/',
+    view_func=photographer_camera_api,
     methods = ['POST']
 )
