@@ -10,7 +10,7 @@ class InquiryDao:
 
     def create_inquiey(self, request_date, cursor=None):
         try:
-            100/0
+           
             request_date['query_id'] = create_query(cursor)
             create_address_query = ''' INSERT INTO address (address, city, state_id, district_id, zip_code) values('{address}', '{city}', '{state_id}', 
                                                                                                                     '{district_id}', '{zip_code}') RETURNING id;'''
