@@ -3,7 +3,7 @@ from config import db_cursor as cursor, db_conn as conn
 from exceptions.dao_exceptions import DaoExceptionError
 class UserProfileDao:
 
-    def get_user_info_from_user_id(self, user_id:int):
+    def get_user_info_from_user_id(self, user_id:int, cursor=cursor):
         try:
             user_profile_qs = '''select a.username, up.email, up.mobile_number, a.group_id
                                 from auth as a join userprofile as up 

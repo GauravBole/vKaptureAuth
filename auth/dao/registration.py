@@ -20,7 +20,6 @@ class UserDao(object):
     
     def create_user_and_user_profile(self, user_data, user_profile_data, cursor=None):
         try:
-            100/0
             # create or get user ID
             query = """WITH ins as (Insert into auth (username, password, group_id) values ('{username}', '{password}', (SELECT id from "group" WHERE code='{group}')) on conflict (username) do nothing RETURNING *)
                 select id from ins union select id from auth where username='{username}'"""
@@ -32,7 +31,7 @@ class UserDao(object):
             cursor.execute(user_profile_query)
             
             return True
-        except Exception as e:
+        except Exception:
             raise RegisterUserDaoException(message="error in user register dao", status_code=404)
             
         # https://www.psycopg.org/docs/cursor.html

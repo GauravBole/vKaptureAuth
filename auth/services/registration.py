@@ -32,17 +32,17 @@ class RgeistrationService:
     @atomic_tarnsaction
     def register_user(self, request_data: dict, cursor=None):
         try:
+            if "password" in request_data:
+                request_data['password'] = PasswordHashing.craete_hash(request_data['password'])
+
             auth_user_data = User(**request_data)
             user_profile_data = UserProfile(**request_data) 
             self.validate_user(request_data['username'])
-            request_data['password'] = PasswordHashing.craete_hash(request_data['password'])
             user_dao = UserDao()
             user_dao.create_user_and_user_profile(user_data=auth_user_data.dict(), user_profile_data=user_profile_data.dict(), cursor=cursor)
-            100/0
-
-        except (ValueError, RegisterUserDaoException) as ve:
+        except (ValueError, RegisterUserDaoException):
             raise
-        except Exception as e:
+        except Exception:
             raise RegisterUserException(message="error in user register service", status_code=400)
            
 

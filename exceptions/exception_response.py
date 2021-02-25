@@ -6,6 +6,7 @@ from pydantic import ValidationError
 errors = Blueprint('errors', __name__)
 
 @errors.app_errorhandler(VkaptureError)
+@errors.app_errorhandler(ValueError)
 def handle_error(error):
     success = False
     if hasattr(error, 'message'):
@@ -34,7 +35,7 @@ def handle_error(error):
 def handle_unexpected_error(error):
     status_code = 500
     success = False
-    print(error)
+    print(error.__class__.__name__)
     response = {
         'success': success,
         'error': {
