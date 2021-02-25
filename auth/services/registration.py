@@ -4,8 +4,9 @@ from validators.email import validate_email
 from auth.dao.registration import UserDao
 from utils.password_hashing import PasswordHashing
 from models import UserProfile, User
-from exceptions.register_user_exception import RegisterUserException
+from exceptions.auth_exception import RegisterUserException, RegisterUserDaoException
 from pydantic import ValidationError
+from database_connection.decorator import atomic_tarnsaction
 
 import json
 class RgeistrationService:
@@ -27,26 +28,23 @@ class RgeistrationService:
         if user_exists:
             raise ValueError("user name allready exists please try another")
         return True
-    
-    def register_user(self, request_data: dict):
+
+    @atomic_tarnsaction
+    def register_user(self, request_data: dict, cursor=None):
         try:
+            if "password" in request_data:
+                request_data['password'] = PasswordHashing.craete_hash(request_data['password'])
+
             auth_user_data = User(**request_data)
             user_profile_data = UserProfile(**request_data) 
             self.validate_user(request_data['username'])
-            request_data['password'] = PasswordHashing.craete_hash(request_data['password'])
             user_dao = UserDao()
-            user_dao.create_user_and_user_profile(user_data=auth_user_data.dict(), user_profile_data=user_profile_data.dict())
-        
-        except ValidationError as e:
-            raise RegisterUserException("error in registration", message=e.errors(), status_code=400)
-        except ValueError as ve:
-            print("in value errro", ve)
-            raise RegisterUserException(request_data['username'], message=(str(ve)), status_code=403)
-
-        
-        # validate_user = self.validate_user(username=request_data['username'])
-        
-        
+            user_dao.create_user_and_user_profile(user_data=auth_user_data.dict(), user_profile_data=user_profile_data.dict(), cursor=cursor)
+        except (ValueError, RegisterUserDaoException):
+            raise
+        except Exception:
+            raise RegisterUserException(message="error in user register service", status_code=400)
+           
 
         
         

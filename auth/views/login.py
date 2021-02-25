@@ -49,21 +49,13 @@ class LoginApi(MethodView):
         pass
     
     def post(self):
-        response_data = {"message": {'msg': "something wents wrong"}, "status": "fail",  'data': {}, "status_code": 501}
-        try:
-            post_data = request.form.to_dict()
-            username = post_data.get("username") or None
-            password = post_data.get('password') or None
-            login_service_obj = LoginService()
-            user_data = login_service_obj.login_user(request_data={"username": username, "password": password})
-            response_data['message'] = "success" 
-            response_data["status"] = "success"
-            response_data["status_code"] = 200
-            response_data['data'] = user_data
-        except (DaoExceptionError, ExceptionError) as e:
-            response_data['status_code'] = e.status_code
-            response_data['message'] = e.dict()
-            
+        response_data = {"success": True,  'data': {}, "status_code": 200}
+        post_data = request.form.to_dict()
+        username = post_data.get("username") or None
+        password = post_data.get('password') or None
+        login_service_obj = LoginService()
+        user_data = login_service_obj.login_user(request_data={"username": username, "password": password})
+        response_data['data'] = user_data
         return make_response(jsonify(response_data)), response_data['status_code']
         
 
