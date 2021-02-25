@@ -87,7 +87,7 @@ class PhotographerPorfileService:
             request_data['photographer_id'] = photographer_profile_id
             camera_data = CameraSpecification(**request_data)
             photographer_profile_dao.add_camera(camera_data=camera_data.dict(), cursor=cursor)
-
+            100/0
         except ValueError as ve:
             raise
 

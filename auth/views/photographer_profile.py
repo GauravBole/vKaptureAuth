@@ -104,20 +104,20 @@ class PhotographerCameraApiView(MethodView):
     def post(self):
         response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}
 
-        try:
-            user = request.environ['user']
-            user_id = user['user_id']
-            post_data = request.form.to_dict()
-            photographer_profile_service = PhotographerPorfileService()
-            photographer_profile_service.add_camera(request_data=post_data, auth_user=user_id)
-            response_data['message'] = {'msg': "camera added successfully"},
-            response_data["status"] = "success"
-            response_data["status_code"] =  200
+        # try:
+        user = request.environ['user']
+        user_id = user['user_id']
+        post_data = request.form.to_dict()
+        photographer_profile_service = PhotographerPorfileService()
+        photographer_profile_service.add_camera(request_data=post_data, auth_user=user_id)
+        response_data['message'] = {'msg': "camera added successfully"},
+        response_data["status"] = "success"
+        response_data["status_code"] =  200
         
-        except (DaoExceptionError, ExceptionError) as ex:
-            response_data['message'] = ex.get_traceback_details()
-        except (Exception, ValueError) as e:
-            response_data['message'] = e.args[0]
+        # except (DaoExceptionError, ExceptionError) as ex:
+        #     response_data['message'] = ex.get_traceback_details()
+        # except (Exception, ValueError) as e:
+        #     response_data['message'] = e.args[0]
         return make_response(jsonify(response_data)), response_data['status_code']
         
 

@@ -1,6 +1,7 @@
 import sys
 from typing import KeysView
-class ExceptionError(Exception):
+from .main_custome_exception import VkaptureError
+class ExceptionError(VkaptureError):
     
     # def __init__(self, status_code=None, message="Error In register user"):
         
@@ -38,3 +39,4 @@ class ExceptionError(Exception):
     def get_traceback_details(self):
         print("--------->"*10,)
         return self.traceback_details
+

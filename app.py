@@ -18,16 +18,23 @@ class App:
         app.register_blueprint(quotation_blueprint)
         app.register_blueprint(photographer_blueprint)
 
+    def _initialize_errorhandlers(self, app):
+        '''
+        Initialize error handlers
+        '''
+        from exceptions.exception_response import errors
+        app.register_blueprint(errors)
 
     def _initialize_middelware(self, app):
         app.wsgi_app = looger_middleware.LoggingMiddleware(app.wsgi_app)
         app.wsgi_app = login_middleware.RequestUser(app.wsgi_app)
-
+        
 
     def create_app(self):
         app = Flask(__name__)
         self._initialize_blueprints(app)
         self._initialize_middelware(app)
+        self._initialize_errorhandlers(app)
         app.config.from_object('config.Config')
         app.secret_key = '!secret'
         return app
