@@ -6,7 +6,7 @@ from typing import Counter, List
 from pydantic import ValidationError
 from database_connection.decorator import atomic_tarnsaction
 from database_connection.context_manager import DatabaseConnection as db_connection
-from exceptions.inquiry_exceptions import AddInqueryDaoException, AddInqueryException
+from exceptions.inquiry_exceptions import AddInqueryDaoException, AddInqueryException, SendQeryDaoException, SendQeryException
 
 class InquiryService:
 
@@ -62,5 +62,9 @@ class InquiryService:
                 raise ValueError("error inquiry id not exists in system")
             inquiry_photographer_set = [(inquiry_id, i) for i in photographer_ids]
             inquiry_dao.send_query(inquiry_photographer_set, cursor=cursor)
-        except Exception as e:
-            raise ExceptionError(message="error in send inquiry to photographer", status_code=400)
+
+        except (ValueError, SendQeryDaoException):
+            raise 
+
+        except Exception:
+            raise SendQeryDaoException(message="error in send inquiry to photographer", status_code=400)

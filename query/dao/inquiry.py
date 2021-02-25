@@ -1,7 +1,7 @@
 
 # from config import db_cursor as cursor, db_conn as conn
 from flask.globals import request
-from exceptions.inquiry_exceptions import AddInqueryDaoException
+from exceptions.inquiry_exceptions import AddInqueryDaoException, SendQeryDaoException
 from utils.query_number_generator import create_query
 from database_connection.decorator import atomic_tarnsaction
 import datetime
@@ -104,6 +104,7 @@ class InquiryDao:
 
     def send_query(self, inquiry_photographer_set: list, cursor=None):
         try:
+            # Todo add created by and updated by
             
             # query = """WITH ins as (Insert into send_query (inquiry_id, photographer_id) values ('{inquiry_id}', '{photographer_id}') 
             #             on conflict (inquiry_id, photographer_id) DO UPDATE SET is_active = true RETURNING *)"""
@@ -120,5 +121,6 @@ class InquiryDao:
             cursor.execute(sql, inquiry_photographer_set)
 
         except Exception as e:
-            pass
+            print(e, "--->")
+            raise SendQeryDaoException(status_code=404, message="error in send inquiry photographer dao")
             # raise DaoExceptionError(status_code=400, message="error in send inquiry to photographer")

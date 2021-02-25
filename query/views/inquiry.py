@@ -59,24 +59,14 @@ class InquiryApiView(MethodView):
 class SendQueryPhotographer(MethodView):
 
     def post(self, *args, **kwargs):
-        response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}
-        try:
-            inquiry_service = InquiryService()
-            post_data = request.form.to_dict()
-            photographer_ids = request.form.getlist('photographer_id')
-            inquiry_service.send_query(inquiry_id=post_data['inquiry_id'], photographer_ids=photographer_ids)
-            response_data['message'] = "Inquiry photographer send success"
-            response_data['status_code'] = 200
-            response_data['status'] = "success"
+        response_data = {"status": "fail", "status_code": 200}
+        
+        inquiry_service = InquiryService()
+        post_data = request.form.to_dict()
+        photographer_ids = request.form.getlist('photographer_id')
+        inquiry_service.send_query(inquiry_id=post_data['inquiry_id'], photographer_ids=photographer_ids)
+        response_data['message'] = "Inquiry photographer send success"
 
-        except (ExceptionError, DaoExceptionError) as e:
-            response_data['status_code'] = e.code
-            response_data['message'] = e.get_traceback_details()
-        except ValueError as ve:
-            response_data['status_code'] = 400
-            response_data['message'] = ve.args[0]
-        except Exception as e:
-            print(e)
         return make_response(jsonify(response_data)), response_data['status_code']
          
     
