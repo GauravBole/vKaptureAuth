@@ -1,7 +1,7 @@
 
 # from config import db_cursor as cursor, db_conn as conn
 from flask.globals import request
-from exceptions.dao_exceptions import DaoExceptionError
+from exceptions.inquiry_exceptions import AddInqueryDaoException
 from utils.query_number_generator import create_query
 from database_connection.decorator import atomic_tarnsaction
 import datetime
@@ -10,6 +10,7 @@ class InquiryDao:
 
     def create_inquiey(self, request_date, cursor=None):
         try:
+           
             request_date['query_id'] = create_query(cursor)
             create_address_query = ''' INSERT INTO address (address, city, state_id, district_id, zip_code) values('{address}', '{city}', '{state_id}', 
                                                                                                                     '{district_id}', '{zip_code}') RETURNING id;'''
@@ -27,11 +28,10 @@ class InquiryDao:
                                     '''
             
             cursor.execute(create_inquiry_query.format(**request_date))
-            # conn.commit()  
+
         except Exception as e:
-            # conn.rollback()
-            print(e)
-            raise DaoExceptionError(status_code=401, message="Error in inquiry creation dao", detal_message=e)
+
+            raise AddInqueryDaoException(status_code=401, message="Error in inquiry creation dao")
             
       
     def get_all_inquiry(self, cursor=None):
@@ -58,7 +58,7 @@ class InquiryDao:
             return cursor.fetchall()
         except Exception as e:
             print(e)
-            raise DaoExceptionError(status_code=400, message="error in all inquiry ado")
+            # raise DaoExceptionError(status_code=400, message="error in all inquiry ado")
 
 
     def edit_inquiry(self, update_data: dict, inquiry_id: int, cursor=None):
@@ -80,7 +80,7 @@ class InquiryDao:
             cursor.execute(inquiry_update_query)
         except Exception as e:
             print(e)
-            raise DaoExceptionError(status_code=400, message="error in edit inquiry dao")
+            # raise DaoExceptionError(status_code=400, message="error in edit inquiry dao")
 
     def is_inquiry_id_exists(self, inquiry_id: int, cursor=None):
         try:
@@ -90,7 +90,8 @@ class InquiryDao:
             
             return cursor.fetchone()['exists']
         except Exception as e:
-            raise DaoExceptionError(status_code=400, message="error in find inquiry id")
+            pass
+            # raise DaoExceptionError(status_code=400, message="error in find inquiry id")
         
     def is_photographer_exists(self, photographers: list, cursor=None):
         try:
@@ -119,4 +120,5 @@ class InquiryDao:
             cursor.execute(sql, inquiry_photographer_set)
 
         except Exception as e:
-            raise DaoExceptionError(status_code=400, message="error in send inquiry to photographer")
+            pass
+            # raise DaoExceptionError(status_code=400, message="error in send inquiry to photographer")

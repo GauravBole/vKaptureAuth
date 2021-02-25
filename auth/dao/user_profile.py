@@ -12,6 +12,6 @@ class UserProfileDao:
             cursor.execute(user_profile_qs.format(user_id=user_id))
             row = cursor.fetchone()
             return row
-        except Exception as e:
+        except Exception:
             raise DaoExceptionError(message="error in user profile info dao", status_code=400) 
         

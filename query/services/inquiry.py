@@ -2,40 +2,29 @@ from query.dao.inquiry import InquiryDao
 from query.models import Inquiry, Address, InquiryDetail, InquiryEdit
 from exceptions.exception_error import ExceptionError
 from exceptions.dao_exceptions import DaoExceptionError
-from pydantic import parse_obj_as
 from typing import Counter, List
 from pydantic import ValidationError
 from database_connection.decorator import atomic_tarnsaction
 from database_connection.context_manager import DatabaseConnection as db_connection
+from exceptions.inquiry_exceptions import AddInqueryDaoException, AddInqueryException
+
 class InquiryService:
 
     @atomic_tarnsaction
     def create_inquiry(self, request_data, cursor=None):
-        # print(cursor)
         try:
-            # with db_connection() as conn:
+
             address_model = Address(**request_data)
             request_data['detail_address'] = address_model
             request_data['status'] = 'Created'
-            inquiry_model = Inquiry(**request_data)
+            Inquiry(**request_data)
             inquiry_dao = InquiryDao()
-            # cursor = conn.db_cursor
             inquiry_dao.create_inquiey(request_data, cursor=cursor)
             return True
-
-        except ValidationError as e:
-            raise ExceptionError(message=e.errors(), status_code=400)
-        
-        except ValueError as ve:
-            raise ExceptionError(status_code=403, message=(str(ve)))
-
-        except DaoExceptionError as de:
-            # raise ExceptionError(status_code=403, message=(de.message))
+        except (ValueError, AddInqueryDaoException):
             raise
-
-        except Exception as e:
-            print(e)
-            raise ExceptionError(message="error in inquiry user service", status_code=403)
+        except Exception:
+            raise AddInqueryException(message="error in inquiry add service", status_code=403)
     
     @atomic_tarnsaction
     def get_all_inquires(self, cursor=None):

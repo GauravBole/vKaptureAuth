@@ -1,6 +1,6 @@
 from models import UserProfile, User
 from config import db_cursor as cursor, db_conn as conn
-from exceptions.auth_exception import RegisterUserException, RegisterUserDaoException
+from exceptions.auth_exceptions import RegisterUserException, RegisterUserDaoException
 
 class UserDao(object):
     """

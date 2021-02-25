@@ -16,30 +16,22 @@ class InquiryApiView(MethodView):
        'DELETE': "delete_inquiry",
        'PUT': 'edit_inquiry'
        }
-    decorators = [privilege_required(acl=allow), authanticate]
+    # decorators = [privilege_required(acl=allow), authanticate]
     
 
-    def post(self, *arge, **kwargs):
-        response_data = {"message": {'msg': "something wents wrong"}, "status": "fail", "status_code": 501}
-        try:
-            event_category = request.form.getlist('event_category_id') 
-            post_data = request.form.to_dict()
-            post_data['event_category_id'] = list(map(int, event_category))
-            create_inquiry_service = InquiryService()
-            create_inquiry_service.create_inquiry(request_data=post_data)
-
-            response_data['message'] = "Inquiry Created success fullly"
-            response_data['status_code'] = 200
-            response_data['status'] = "success"
-
-        except (ExceptionError, DaoExceptionError) as e:
-            response_data['status_code'] = e.code
-            response_data['message'] = e.get_traceback_details()
-            # response_data['message'] = e.dict()
+    def post(self):
+        response_data = {"success": True, "status_code": 200}
+        event_category = request.form.getlist('event_category_id') 
+        post_data = request.form.to_dict()
+        post_data['event_category_id'] = list(map(int, event_category))
+        create_inquiry_service = InquiryService()
+        create_inquiry_service.create_inquiry(request_data=post_data)
+        response_data['message'] = "Inquiry Created success fullly"
+        
         return make_response(jsonify(response_data)), response_data['status_code']
         
 
-    def get(self, *arge, **kwargs):
+    def get(self):
         inquiry_service = InquiryService()
         inquiry_data = inquiry_service.get_all_inquires()
         return make_response(jsonify(inquiry_data)), 200
@@ -93,13 +85,16 @@ inquiry_api = InquiryApiView.as_view('inquiry_api')
 send_query_api = SendQueryPhotographer.as_view('send_query_api')
 
 inquiry_blueprint.add_url_rule(
-    '/create',
+    '/',
     view_func=inquiry_api,
-    
-    methods=['GET', 'POST'],
-    # options={"name", "inquiry_add"}
-
+    methods=['POST']
 )
+inquiry_blueprint.add_url_rule(
+    '/',
+    view_func=inquiry_api,
+    methods=['GET']
+)
+
 inquiry_blueprint.add_url_rule(
     '/<int:inquiry_id>',
     view_func=inquiry_api,
