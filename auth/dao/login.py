@@ -1,5 +1,5 @@
 # from config import db_cursor as cursor
-from exceptions.auth_exception import LoginUserDaoException
+from exceptions.auth_exceptions import LoginUserDaoException
 from database_connection.context_manager import DatabaseConnection as db_connection
 class UserLoginDao:
 
@@ -9,7 +9,6 @@ class UserLoginDao:
             # print(user_login_query.format(username=username, password=password))
             cursor.execute(user_login_query.format(username=username, password=password))
             row = cursor.fetchone()
-            
             if row and row['count'] > 0:
                 return True, row
             return False, None

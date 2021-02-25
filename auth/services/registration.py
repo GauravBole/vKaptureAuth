@@ -4,7 +4,7 @@ from validators.email import validate_email
 from auth.dao.registration import UserDao
 from utils.password_hashing import PasswordHashing
 from models import UserProfile, User
-from exceptions.auth_exception import RegisterUserException, RegisterUserDaoException
+from exceptions.auth_exceptions import RegisterUserException, RegisterUserDaoException
 from pydantic import ValidationError
 from database_connection.decorator import atomic_tarnsaction
 

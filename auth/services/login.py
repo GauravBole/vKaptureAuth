@@ -4,7 +4,7 @@ from auth.dao.user_profile import UserProfileDao
 from utils.jwt_util import JWTEncodeDecode
 from utils.password_hashing import PasswordHashing
 from exceptions.exception_error import ExceptionError
-from exceptions.auth_exception import LoginUserDaoException, LoginUserException
+from exceptions.auth_exceptions import LoginUserDaoException, LoginUserException
 from database_connection.decorator import atomic_tarnsaction
 class LoginService:
 
