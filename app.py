@@ -24,7 +24,7 @@ class App:
         '''
         from exceptions.exception_response import errors
         app.register_blueprint(errors)
-
+ 
     def _initialize_middelware(self, app):
         app.wsgi_app = looger_middleware.LoggingMiddleware(app.wsgi_app)
         app.wsgi_app = login_middleware.RequestUser(app.wsgi_app)

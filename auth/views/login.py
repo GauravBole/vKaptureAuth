@@ -25,21 +25,21 @@ def auth():
     return redirect('/')
 
 
-@login_blueprint.route('/')
-def index():
-    # cur = db_cursor.execute('select * from auth;')
-    # print(cur)
-    # array_row = cur.fetchone()
-    # print(array_row)
-    query1 = "select * from auth"
-    cursor.execute(query1)
-    print(cursor.fetchone())
-    query = "SELECT * FROM auth WHERE username=%s"
-    cursor.execute(query, ('gaurav',))
-    row = cursor.fetchone()
-    print(row)
+# @login_blueprint.route('/')
+# def index():
+#     # cur = db_cursor.execute('select * from auth;')
+#     # print(cur)
+#     # array_row = cur.fetchone()
+#     # print(array_row)
+#     query1 = "select * from auth"
+#     cursor.execute(query1)
+#     print(cursor.fetchone())
+#     query = "SELECT * FROM auth WHERE username=%s"
+#     cursor.execute(query, ('gaurav',))
+#     row = cursor.fetchone()
+#     print(row)
 
-    return "Thiss is an example app check"
+#     return "Thiss is an example app check"
 
 class LoginApi(MethodView):
     def __init__(self):

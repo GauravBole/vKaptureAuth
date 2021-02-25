@@ -1,7 +1,7 @@
 
 
 from quotation.models import Quotation
-from exceptions.dao_exceptions import DaoExceptionError
+from exceptions.quotation_exceptions import AddQuotationDaoException
 
 
 class QuotationDAO:
@@ -19,9 +19,8 @@ class QuotationDAO:
             cursor.execute(quotation_query.format(**request_date))
 
         except Exception as e:
-            # conn.rollback()
             print(e)
-            raise DaoExceptionError(status_code=401, message="Error in Quotation creation dao", detal_message=e)
+            raise AddQuotationDaoException(status_code=401, message="Error in Quotation creation dao")
            
     def can_quote(self, inquiry_id, user_id, cursor):
         try:
