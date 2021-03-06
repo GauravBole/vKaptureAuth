@@ -13,7 +13,7 @@ import psycopg2
 # SECRATE_KEY = environ.get('SECRATE_KEY')
 t_host = "localhost"
 t_port = "5432"
-t_dbname = "vkapture"
+t_dbname = "vkaptur_2"
 # t_user = "gaurav"
 # t_pw = "postgres"
 
