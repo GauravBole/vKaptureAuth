@@ -43,7 +43,8 @@ app_obj = App()
 app = app_obj.create_app()
 
 from database_connection.decorator import atomic_tarnsaction
-
+from helper.services import state
+from helper.services import events
 @atomic_tarnsaction
 def init_db(cursor=None):
    
@@ -62,5 +63,15 @@ def initdb_command():
     init_db()
     print('Initialized the database.')
 
+@app.cli.command('import_state')
+def import_state():
+    state_service = state.StateService()
+
+    state_service.add_state_from_dictinary()
+
+@app.cli.command('import_events')
+def import_events():
+    event_service = events.EventService()
+    event_service.add_events()
 
 

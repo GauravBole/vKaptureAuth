@@ -2,6 +2,7 @@ from helper.dao.state import StateDao
 from helper.dao.district import DistrictDao
 from helper.dao.state_district import StateDistrictDao
 
+
 class StateService:
 
     def add_state_from_dictinary(self):
@@ -176,7 +177,8 @@ class StateService:
             district_dao = DistrictDao()
             state_district_dao = StateDistrictDao()
             state_id = state_dao.add_states(name=state, code=state_code)
-            district_id = district_dao.add_district(name=district, code=district_code)
+            district_id = district_dao.add_district(
+                name=district, code=district_code)
             print(state_id, district_id)
-            state_district_dao.add_states_district(state_id=state_id, district_id=district_id)
-            
+            state_district_dao.add_states_district(
+                state_id=state_id, district_id=district_id)

@@ -7,6 +7,10 @@ serve:
 setup:
 	flask initdb
 
+dump_data:
+	flask import_state
+	flask import_events
+
 drop_db:
 	python manage.py flush
 
