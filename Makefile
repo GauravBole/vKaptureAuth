@@ -4,6 +4,9 @@ install:
 serve:
 	flask run
 
+setup:
+	flask initdb
+
 drop_db:
 	python manage.py flush
 

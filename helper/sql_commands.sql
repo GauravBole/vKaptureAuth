@@ -26,8 +26,9 @@ CREATE FUNCTION update_updated_at_column() RETURNS trigger
     RETURN NEW;
   END;
 $$;
-CREATE TRIGGER address_updated_at_modtime BEFORE UPDATE ON address FOR EACH ROW EXECUTE PROCEDURE 
-			update_updated_at_column();
+
+
+
 create table address (id serial primary key, district_id int, state_id int,
 					  constraint fk_district foreign key(district_id) references district(id),
 					  constraint fk_state foreign key(state_id) references state(id),
@@ -37,10 +38,11 @@ create table address (id serial primary key, district_id int, state_id int,
 					  created_at timestamp default current_timestamp, 
 					  updated_at timestamp default current_timestamp,
 					  is_active boolean default true);
-
+CREATE TRIGGER address_updated_at_modtime BEFORE UPDATE ON address FOR EACH ROW EXECUTE PROCEDURE 
+			update_updated_at_column();
 create table event_category (id serial primary key, name varchar(50), code varchar(50) unique, is_active boolean default true);
 
-create type inquiry_status as enum('Created', 'SendQuery', 'ReceivedQuotation', 'AcceptQuotation', 'Expired')
+create type inquiry_status as enum('Created', 'SendQuery', 'ReceivedQuotation', 'AcceptQuotation', 'Expired');
 						  
 -- create table inquiry (id serial primary key,
 -- 					status inquiry_status,
@@ -86,16 +88,16 @@ create table inquiry (id serial primary key,
 					);
 --https://www.compose.com/articles/faster-operations-with-the-jsonb-data-type-in-postgresql/
 
-drop table user_group ;
+-- drop table user_group ;
 create table "group" (id serial primary key, name varchar(100), code varchar(50));
 insert into "group" (name, code) values ('customer', 'C'),('photographer', 'P'), ('admin', 'A');
 alter table auth add column group_id int;
 alter table auth add constraint fk_group foreign key (group_id) references "group"(id);
 create table permission (id serial primary key, name varchar(100), code varchar(50));
 create table group_permission (id serial primary key,
-								group_id int, constraint fk_group foreign key(group_id) references user_group(id),
-							permission_id int, constraint fk_permission foreign key(permission_id) references permission(id)); 
-
+								group_id int, constraint fk_group foreign key(group_id) references "group"(id),
+							permission_id int, constraint fk_permission foreign key(permission_id) references permission(id));
+						
 
 create table quotation_detail (id serial primary key, 
 						photographer_id int, constraint photographer_id foreign key(photographer_id) REFERENCES auth(id),
@@ -103,17 +105,16 @@ create table quotation_detail (id serial primary key,
 						message text,
 						is_accepted boolean default false,
 						created_at timestamp default current_timestamp
-						)
+						);
 
 create table quotation (id serial primary key,
 						inquiry_id int, constraint inquiry_id foreign key(inquiry_id) references inquiry(id),
 						quotation_detail_id int, constraint quotation_detail_id foreign key(quotation_detail_id) references quotation_detail(id),
 						is_active boolean default true,
 						created_at timestamp default current_timestamp
-						)
+						);
 
-CREATE TRIGGER send_query_updated_at_modtime BEFORE UPDATE ON send_query FOR EACH ROW EXECUTE PROCEDURE 
-			update_updated_at_column();
+
 		
 create table send_query (id serial primary key, 
 						inquiry_id int, constraint inquiry_id foreign key(inquiry_id) references inquiry(id),
@@ -122,10 +123,12 @@ create table send_query (id serial primary key,
 						created_at timestamp default current_timestamp,
 						updated_at timestamp default current_timestamp,
 						unique (inquiry_id, photographer_id)
-						)
+						);
 
-CREATE TRIGGER portfolio_image_updated_at_modtime BEFORE UPDATE ON portfolio_image FOR EACH ROW EXECUTE PROCEDURE 
+CREATE TRIGGER send_query_updated_at_modtime BEFORE UPDATE ON send_query FOR EACH ROW EXECUTE PROCEDURE 
 			update_updated_at_column();
+
+
 		
 create table portfolio_image (id serial primary key, 
 								image_path varchar(250),
@@ -134,8 +137,10 @@ create table portfolio_image (id serial primary key,
 								constraint created_by_id foreign key(created_by_id) references auth(id),
 								constraint updated_by_id foreign key(updated_by_id) references auth(id),
 								created_at timestamp default current_timestamp,
-								updated_at timestamp)
-
+								updated_at timestamp);
+CREATE TRIGGER portfolio_image_updated_at_modtime BEFORE UPDATE ON portfolio_image FOR EACH ROW EXECUTE PROCEDURE 
+			update_updated_at_column();
+			
 create table portfolio_video (id serial primary key, 
 								video_path varchar(250),
 								created_by_id int,
@@ -145,7 +150,7 @@ create table portfolio_video (id serial primary key,
 								constraint created_by_id foreign key(created_by_id) references auth(id),
 								constraint updated_by_id foreign key(updated_by_id) references auth(id),
 								created_at timestamp default current_timestamp,
-								updated_at timestamp)
+								updated_at timestamp);
 CREATE TRIGGER portfolio_video_updated_at_modtime BEFORE UPDATE ON portfolio_video FOR EACH ROW EXECUTE PROCEDURE 
 			update_updated_at_column();
 
@@ -160,6 +165,6 @@ create table photographer_profile(id serial primary key, user_id int, address_id
 								constraint address_id foreign key(address_id) references address(id),
 								created_at timestamp default current_timestamp,
 								updated_at timestamp
-								)
+								);
 alter table photographer_profile add constraint unique_user unique (user_id)	;						
 						

@@ -42,8 +42,25 @@ class App:
 app_obj = App()
 app = app_obj.create_app()
 
+from database_connection.decorator import atomic_tarnsaction
 
+@atomic_tarnsaction
+def init_db(cursor=None):
+   
+    with app.open_resource('helper/sql_commands.sql', mode='r') as f:
+        try:
+            query = f.read()
+            cursor.execute(query)
+        except Exception as e:
+            
+            raise 
+    
+    print("init db")
 
+@app.cli.command('initdb')
+def initdb_command():
+    init_db()
+    print('Initialized the database.')
 
 
 
