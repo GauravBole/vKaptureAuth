@@ -1,10 +1,10 @@
 ---- user
 
-Create table auth (id serial primary key, username varchar(25) unique not null, password varchar(50), last_login timestamp, created_at timestamp, is_active boolean default true);
+Create table auth (id serial primary key, username varchar(25) unique not null, password varchar(150), last_login timestamp, created_at timestamp, is_active boolean default true);
 
 create table userprofile (id serial primary key, user_id int, CONSTRAINT fk_user foreign key(user_id) REFERENCES auth(id)
 ,email varchar(250) not null, mobile_number varchar(15)
-not null, profile_type varchar(50) not null, profiel_pic varchar(250),
+not null, profiel_pic varchar(250),
 created_at timestamp, updated_at timestamp, is_active boolean default true);
 
 alter table userprofile add constraint user_id unique (user_id);

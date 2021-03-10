@@ -40,9 +40,11 @@ class RgeistrationService:
             self.validate_user(request_data['username'])
             user_dao = UserDao()
             user_dao.create_user_and_user_profile(user_data=auth_user_data.dict(), user_profile_data=user_profile_data.dict(), cursor=cursor)
-        except (ValueError, RegisterUserDaoException):
+        except (ValueError, RegisterUserDaoException) as e:
+            print(e)
             raise
         except Exception:
+            
             raise RegisterUserException(message="error in user register service", status_code=400)
            
 
