@@ -31,7 +31,8 @@ class UserDao(object):
             cursor.execute(user_profile_query)
             
             return True
-        except Exception:
+        except Exception as e:
+            print(e)
             raise RegisterUserDaoException(message="error in user register dao", status_code=404)
             
         # https://www.psycopg.org/docs/cursor.html

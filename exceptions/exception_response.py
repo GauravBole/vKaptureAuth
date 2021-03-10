@@ -9,6 +9,7 @@ errors = Blueprint('errors', __name__)
 @errors.app_errorhandler(ValueError)
 def handle_error(error):
     success = False
+    print(error)
     if hasattr(error, 'message'):
         
         message = error.message
